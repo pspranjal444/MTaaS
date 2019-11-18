@@ -7,6 +7,9 @@ var fs = require('fs');
 const BugSchema = require('../../models/BugSchema');
 const ScriptsSchema = require('../../models/ScriptsSchema');
 const mongoose = require('mongoose');
+const shelljs = require('shelljs');
+const Logs = require('../../models/testresults');
+const Device = require('../../models/DeviceSchema');
 
 mongoose.connect('mongodb+srv://mtaas:mtaas@cluster0-jzndm.mongodb.net/test?retryWrites=true&w=majority', { useNewUrlParser: true });
 
@@ -14,6 +17,8 @@ app.use(cors())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(fileUpload());
+app.use('/', express.static(__dirname + '/scripts'));
+app.use('/', express.static(__dirname + '/log_files'));
 
 
 
@@ -78,23 +83,76 @@ app.post('/uploadLogs', (req, res) => {
 })
 
 app.get('/getLogs', (req, res) => {
+    const {tester_id} = req.query;
 
+    Logs.find({tester_id: tester_id}).exec().then(result=>{
+        console.log(result);
+        res.json(result);
+    })
 })
 
-app.post('/runScript', (req, res) => {
 
+app.post('/runScript', (req, res) => {
+    const {file_name} = req.body;
+    console.log('running');
+    var path = 'D:/2ndSem/CMPE281/test-runner-react/src/Server/scripts/' + 'vbO4Sindex.js';
+    console.log(path);
+    var code = shelljs.exec('node ' + path);
+    console.log(code.code);
+    if(code.code==0){
+        res.send(true);
+    }
+    else{
+        res.send(false);
+    }
 })
 
 app.post('/deleteScript', (req, res) => {
-
+    const {_id, tester_id, project_id} = req.body;
+    var query = {_id: _id, tester_id: tester_id, project_id: project_id}
+    ScriptsSchema.remove(query).exec().then(result=>{
+        res.json(result);
+    })
 })
 
 app.post('/deleteLog', (req, res) => {
-
+    const {project_id, test_id, tester_id} = req.body;
+    var query = {project_id: project_id, test_id: test_id, tester_id: tester_id};
+    Logs.remove(query).exec().then(result=>{
+        console.log(result);
+        res.send(true);
+    }).catch(err=>{
+        console.log(err);
+    })
 })
 
 app.get('/downloadLog', (req, res) => {
     
+})
+
+app.post('/createDevice', (req, res) => {
+    const {project_id, tester_id, device_name, ram, processor, status} = req.body;
+    const data = new Device({
+        _id: new mongoose.Types.ObjectId(),
+        project_id: project_id,
+        tester_id: tester_id,
+        device_name: device_name,
+        ram: ram,
+        processor: processor,
+        status: status
+    })
+
+    data.save().then(result=>{
+        console.log(result);
+        res.send(true);
+    })
+});
+
+app.get('/getDevices', (req, res) => {
+    const {tester_id} = req.query;
+    Device.find({tester_id: tester_id}).exec().then(result=>{
+        res.json(result);
+    })
 })
 
 app.get('/downloadScript', (req, res) => {
@@ -132,7 +190,10 @@ app.post('/createBug', (req, res) => {
 })
 
 app.get('/getBugDetails', (req, res) => {
-    
+    var _id = req.query._id;
+    BugSchema.find({_id: _id}).exec().then(result=>{
+        res.json(result);
+    })
 })
 
 app.get('/getBugsList', (req, res) => {

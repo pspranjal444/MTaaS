@@ -9,4 +9,4 @@ const ScriptsSchema = mongoose.Schema({
     file_location: String,
 })
 
-module.exports = mongoose.model('ScriptsSchema', ScriptsSchema);
+module.exports = mongoose.model('ScriptsSchema', ScriptsSchema); 

@@ -30,7 +30,6 @@ class BugReporting extends Component {
     }
 
     onClick(){
-            console.log('Hello');
             const {summary, testid, projectid, testerid, steps, actual_results, expected_results, bug_type, bug_severity} = this.state;
             Axios.post('http://localhost:3001/createBug', {summary, testid, projectid, testerid, steps, actual_results, expected_results, bug_type, bug_severity}).then(result=>{
                 console.log(result);

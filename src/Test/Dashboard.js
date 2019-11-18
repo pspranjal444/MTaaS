@@ -18,8 +18,10 @@ class Dashboard extends Component{
                             <li><Link to="/scripts">View Scripts</Link></li>
                             <li><Link to="/logs">View Logs</Link></li>
                             <li><Link to="/report_bug">Report Bug</Link></li>
-                            <li><Link to="/">View Projects</Link></li>
-                            <li><a href="#">Run Tests</a></li>
+                            <li><Link to="/projects">View Projects</Link></li>
+                            <li><Link to="/bugs">View Bugs</Link></li>
+                            <li><Link to="/createDevice">Create Device</Link></li>
+                            <li><Link to="/viewDevices">View Devices</Link></li>
                         </ul>
 
                         <ul class="nav navbar-nav navbar-right">

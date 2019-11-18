@@ -11,7 +11,8 @@ class Scripts extends Component{
             project_id: '',
             tester_id: '',
             script: null,
-            script_data: ''
+            script_data: [],
+            spinner: ''
         }
         this.onChange = this.onChange.bind(this);
         // this.onChangeFile = this.onChangeFile.bind(this);
@@ -60,7 +61,52 @@ class Scripts extends Component{
     }
 
     render(){
+        let data = this.state.script_data.map(entry=>{
+            return(
+                <tr>
+                    <td style={{textAlign: 'center'}}>{entry.script_name}</td>
+                    <td style={{textAlign: 'center'}}>{entry.project_id}</td>
+                    <td style={{textAlign: 'center'}}>{entry.tester_id}</td>
+                    <td style={{textAlign: 'center'}}><a href={entry.file_location} download>Download</a></td>
+                    <td style={{textAlign: 'center'}}><a href="#" onClick={()=>{
+                        const {_id, tester_id, project_id, file_name} = entry;
+                        this.setState({
+                            // spinner: <i class="fa fa-circle-o-notch fa-spin" style={{fontSize: '15px'}}></i>
+                            spinner: <i class="fa fa-spinner fa-spin" style={{fontSize: '15px'}}></i>
+                        });
+                        Axios.post('http://localhost:3001/runScript', {_id, tester_id, project_id, file_name}).then(result=>{
+                            console.log(result);
 
+                            
+
+                            if(result.data==true){
+                                // alert('Tests Executed Successfully. Please view the log report');
+                                this.setState({
+                                    spinner: <span style={{color: '#90ee90'}} class="glyphicon glyphicon-ok"></span>
+                                })
+                            }
+                            else{
+                                this.setState({
+                                    spinner: <span class="glyphicon glyphicon-remove" style={{color: 'red'}}></span>
+                                })
+                                // alert('There was error executing one or more test cases');
+                            }
+                            
+                        });
+                        // <div class="spinner-border"></div>
+                    }}><span class="glyphicon glyphicon-play"></span></a>&nbsp;&nbsp;&nbsp;{this.state.spinner}</td>
+                    <td style={{textAlign: 'center'}}><a href="#" onClick={()=>{
+                        var _id = entry._id;
+                        var tester_id = entry.tester_id;
+                        var project_id = entry.project_id;
+                        Axios.post('http://localhost:3001/deleteScript', {_id, tester_id, project_id}).then(result=>{
+                            console.log('Deleted', result);
+                            alert('Script File Deleted');
+                        })
+                    }}><span class="glyphicon glyphicon-trash"></span></a></td>
+                </tr>
+            );
+        })
 
         return(
             <div class="container">
@@ -87,10 +133,12 @@ class Scripts extends Component{
             </div>
                 <div class="jumbotron" style={{marginTop: '50px', width: '700px', height: '50px', marginLeft: '15%'}}>
                     <div>
-                    <h2 style={{transform: 'translate(0%, -100%)'}}>View Scripts</h2>
-                    <button style={{transform: 'translate(220%, -180%)'}} type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Add Script</button>
+                        <h2 style={{transform: 'translate(0%, -100%)'}}>View Scripts</h2>
+                        <button style={{transform: 'translate(490%, -180%)'}} type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Add Script</button>
                     </div>
                 </div>
+
+                
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -103,7 +151,7 @@ class Scripts extends Component{
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        {/* <tr>
                             <td style={{textAlign: 'center'}}>Test Text Field</td>
                             <td style={{textAlign: 'center'}}>123456</td>
                             <td style={{textAlign: 'center'}}>5678</td>
@@ -126,7 +174,8 @@ class Scripts extends Component{
                             <td><a href="#">Download</a></td>
                             <td style={{textAlign: 'center'}}><a href="#"><span class="glyphicon glyphicon-play"></span></a></td>
                             <td style={{textAlign: 'center'}}><a href="#"><span class="glyphicon glyphicon-trash"></span></a></td>
-                        </tr>
+                        </tr> */}
+                        {data}
                     </tbody>
                 </table>
             </div>
