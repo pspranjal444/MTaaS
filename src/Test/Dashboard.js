@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-
+import Sidebar from '../Sidebar/Sidebar';
 class Dashboard extends Component{
     constructor(props){
         super(props);
@@ -8,6 +8,7 @@ class Dashboard extends Component{
     render(){
         return(
             <div class="container">
+                <Sidebar/>
                 <nav class="navbar navbar-default">
                     <div class="container-fluid">
                         <div class="navbar-header">
@@ -18,7 +19,7 @@ class Dashboard extends Component{
                             <li><Link to="/scripts">View Scripts</Link></li>
                             <li><Link to="/logs">View Logs</Link></li>
                             <li><Link to="/report_bug">Report Bug</Link></li>
-                            <li><Link to="/projects">View Projects</Link></li>
+                            <li><Link to="/projects">My Projects</Link></li>
                             <li><Link to="/bugs">View Bugs</Link></li>
                             <li><Link to="/createDevice">Create Device</Link></li>
                             <li><Link to="/viewDevices">View Devices</Link></li>
@@ -26,7 +27,7 @@ class Dashboard extends Component{
 
                         <ul class="nav navbar-nav navbar-right">
                             <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                            <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                         </ul>
                     </div>
                 </nav>

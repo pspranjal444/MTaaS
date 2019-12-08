@@ -1,66 +1,98 @@
 import React, {Component} from 'react';
 import Dashboard from './Dashboard';
+import Axios from 'axios';
+import cookie from 'react-cookies';
 
-class Projects extends Component{
+class MyProjects extends Component{
     constructor(props){
         super(props);
-        this.state ={
-            modal: ''
+        this.state = {
+            records: [],
+            details: '',
+            project_name: '',
+            project_id: '',
+            manager_name: '',
+            proj_desc: '',
+            app_link: '',
+            app_name: ''
         }
     }
 
+    componentDidMount(){
+        const tester_id = cookie.load('tester_id');
+        console.log('Hello')
+        Axios.get('http://localhost:3001/getApprovedApps', {params: {tester_id}}).then(result=>{
+            console.log(result);
+            console.log('Hello')
+            this.setState({
+                records: result.data
+            })
+        })
+    }
+
     render(){
-        return (
+        // let details = null;
+        let projects = this.state.records.map((entry)=>{
+            console.log(entry.project_name)
+            return(
+                <tr key={entry.project_id}>
+                    <td style={{textAlign: 'center'}}>{entry.project_name}</td>
+                    <td style={{textAlign: 'center'}}>{entry.project_id}</td>
+                    <td style={{textAlign: 'center'}}>{entry.manager_name}</td>
+                    <td style={{textAlign: 'center'}}><button class="btn btn-success" data-toggle="modal" data-target="#myModal" onClick={()=>{
+                        this.setState({
+                            project_name: entry.project_name,
+                            project_id: entry.project_id,
+                            manager_name: entry.manager_name,
+                            manager_id: entry.manager_id,
+                            proj_desc: entry.proj_desc,
+                            app_link: entry.app_link,
+                            app_name: entry.app_name
+                        })
+                    }}>View</button></td>
+                </tr>
+            )
+        })
+        return(
             <div class="container">
                 <Dashboard/>
-                <div class="modal fade" id="myModal" role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h3 class="modal-title">Project Name: Marketing App</h3>
-                                <h4 class="modal-title">Project ID: 123456</h4>
-                            </div>
-                            <div class="modal-body">
-                                <h5><b>Introduction:</b>&nbsp;&nbsp;&nbsp;&nbsp;This is marketing app for users all around the world</h5>
-                                {/* <h6>Parameters to test:</h6> */}
-                                <p><b>Parameters to test:</b>&nbsp;&nbsp;&nbsp;&nbsp;Go into the activity name: 'appActivity' and test for textfields and buttons</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="jumbotron" style={{marginTop: '50px', width: '700px', height: '50px', marginLeft: '15%'}}>
-                    <div>
-                        <h2 style={{transform: 'translate(0%, -100%)'}}>View Projects</h2>
-                    </div>
+                <div id="myModal" class="modal fade" role="dialog">
+                                     <div class="modal-dialog">
+                                       <div class="modal-content">
+                                         <div class="modal-header">
+                                           <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                           <h4 class="modal-title">{this.state.project_name}</h4>
+                                         </div>
+                                         <div class="modal-body">
+                                           <p><b>Project ID: </b>{this.state.project_id}</p>
+                                           <p><b>Application: </b>{this.state.app_name}</p>
+                                           <p><b>Manager Name: </b>{this.state.manager_name}</p>
+                                           <p><b>Manager ID: </b>{this.state.manager_id}</p>
+                                           <p><b>Description: </b>{this.state.proj_desc}</p>
+                                           <p><b>Application Link: </b><a href="#">{this.state.app_link}</a></p>
+                                         </div>
+                                         <div class="modal-footer">
+                                           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                         </div>
+                                       </div>
+                                  
+                                     </div>
+                                   </div>
+                <div>
+                        <h2>My Projects</h2>
                 </div>
                 <table class="table table-striped">
                     <thead>
                         <tr>
                             <th style={{textAlign: 'center'}}>Project Name</th>
                             <th style={{textAlign: 'center'}}>Project ID</th>
+                            <th style={{textAlign: 'center'}}>Manager</th>
                             <th style={{textAlign: 'center'}}>View</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td style={{textAlign: 'center'}}>Marketing app</td>
-                            <td style={{textAlign: 'center'}}>123456</td>
-                            <td style={{textAlign: 'center'}}><a href="#" data-toggle="modal" data-target="#myModal">View</a></td>
-                        </tr>
-                        <tr>
-                            <td style={{textAlign: 'center'}}>Shopping app</td>
-                            <td style={{textAlign: 'center'}}>2324434</td>
-                            <td style={{textAlign: 'center'}}><a href="#">View</a></td>
-                        </tr>
-                        <tr>
-                            <td style={{textAlign: 'center'}}>Marketing app</td>
-                            <td style={{textAlign: 'center'}}>534364</td>
-                            <td style={{textAlign: 'center'}}><a href="#">View</a></td>
-                        </tr>
+                        {projects}
+                        {this.state.details}
                     </tbody>
                 </table>
             </div>
@@ -68,4 +100,4 @@ class Projects extends Component{
     }
 }
 
-export default Projects;
+export default MyProjects;

@@ -51,7 +51,7 @@ class Scripts extends Component{
     }
 
     componentDidMount(){
-        var tester_id = '123'
+        var tester_id = cookie.load('tester_id');
         Axios.get('http://localhost:3001/getScripts', {params: {tester_id}}).then(result=>{
             console.log(result.data);
             this.setState({

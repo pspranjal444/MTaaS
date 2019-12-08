@@ -12,7 +12,7 @@ class BugReporting extends Component {
             summary: '',
             testid: '',
             projectid: '',
-            testerid: '',
+            testerid: cookie.load('tester_id'),
             steps: '',
             actual_results: '',
             expected_results: '',
@@ -75,10 +75,6 @@ class BugReporting extends Component {
                         <div class="form-group">
                             <label for="usr" class="pull-left">Project ID:</label>
                             <input type="text" class="form-control" name="projectid" onChange={this.onChange} id="projectid"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="usr" class="pull-left">Tester ID:</label>
-                            <input type="text" class="form-control" name="testerid" onChange={this.onChange} id="testerid"/>
                         </div>
                         <div class="form-group">
                             <label for="usr" class="pull-left">What did you do? (steps to reproduce)</label>

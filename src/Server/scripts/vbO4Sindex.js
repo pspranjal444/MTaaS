@@ -5,8 +5,8 @@ const db = require('./database');
 const f = require('./file');
 console.log('HERE');
 const opts = {
-  port: 4723,
-  capabilities: {
+    port: 4723,
+    capabilities: {
     platformName: "Android",
     platformVersion: "8",
     deviceName: "Android Emulator",

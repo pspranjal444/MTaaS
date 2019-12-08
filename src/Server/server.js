@@ -10,7 +10,9 @@ const mongoose = require('mongoose');
 const shelljs = require('shelljs');
 const Logs = require('../../models/testresults');
 const Device = require('../../models/DeviceSchema');
-
+const userData = require('../../models/userData');
+const ProjectSchema = require('../../models/ProjectSchema');
+const ApplicationSchema = require('../../models/ApplicationSchema');
 mongoose.connect('mongodb+srv://mtaas:mtaas@cluster0-jzndm.mongodb.net/test?retryWrites=true&w=majority', { useNewUrlParser: true });
 
 app.use(cors())
@@ -19,12 +21,221 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(fileUpload());
 app.use('/', express.static(__dirname + '/scripts'));
 app.use('/', express.static(__dirname + '/log_files'));
+app.use('/', express.static(__dirname + '/generated'));
 
 
 
 app.get('/', (req, res)=>{
     console.log('Reached Server');
 })
+
+app.post('/signup',function(req,res){
+    var name= req.body.Name;
+    var username=req.body.Email;
+    var password=req.body.Password;
+    // password = md5(password);
+    var role=req.body.Role;
+    
+    userData.find({username:username}).exec().then(result=>{
+      
+      if(result.length>0){
+        res.send(false);
+      }
+      else{
+        console.log(name);
+        const user_id = Math.floor(Math.random()*90000) + 10000;
+
+        const entry = new userData({
+          _id: new mongoose.Types.ObjectId(),
+          name:  name,
+          user_id: user_id,
+          username: username,
+          password: password,
+          role: role,
+          skils:'',
+          projectid:'',
+          projects:'' ,
+        })
+          if(name && username)
+          {
+          console.log('Entered');
+          entry.save().then(result=>{
+          console.log(res);
+          res.send(true);
+          }).catch(err=>console.log(err));
+          }
+      }
+    })
+});
+
+app.post('/login',function(req,res){
+    var x=req.body.id;
+    var y=req.body.pwd;
+    // y=md5(y);
+    // var z=req.body.login;
+    var flag = '';
+    var query={username:x,password:y};
+    userData.find(query).exec().then(result=>{
+      if(result.length<=0){
+        res.send(false);
+      }
+      else{
+      console.log("Login result",result);
+      res.json(result);
+      }
+    })
+})
+
+
+app.get('/getProfile',function(req,res){
+    var email=req.query.email;
+    console.log('Profile in  view',email);
+    var query={username:email};
+    userData.find(query).exec().then(result=>{
+      console.log("In Update Profile View",result);
+      res.json(result);
+    })
+});
+
+app.get('/getTesterProfile', function(req,res){
+    var tester_id=req.query.tester_id;
+    // console.log('Profile in  view',email);
+    var query={user_id: tester_id};
+    userData.find(query).exec().then(result=>{
+      console.log("Get tester Profile",result);
+      res.json(result);
+    })
+});
+
+app.post('/approve', (req, res)=>{
+    const {tester_id, project_id} = req.body;
+    const query = {$set: {result: true}}
+    ApplicationSchema.update({tester_id: tester_id, project_id: project_id}, query).exec().then(result=>{
+        console.log(result);
+        res.send(true);
+    })
+})
+
+app.post('/decline', (req, res)=>{
+    const {tester_id, project_id} = req.body;
+    const query = {$set: {result: false}}
+    ApplicationSchema.update({tester_id: tester_id, project_id: project_id}, query).exec().then(result=>{
+        console.log(result);
+        res.send(true);
+    })
+})
+
+app.post('/generateScript', (req, res)=>{
+    const content = 'const wdio = require("webdriverio");\n'+
+                    'const assert = require("assert");\n'+
+                    'const db = require("./database");\n'+
+                    'const f = require("./file");\n'+
+                    'const opts = {\n'+
+                    'port: 4723,\n'+
+                    '   capabilities: {\n'+
+                    '   platformName: "Android",\n'+
+                    'platformVersion: "8",\n'+
+                    'deviceName: "Android Emulator",\n'+
+                    'app: __dirname + "/apps/" + "ApiDemos-debug.apk",\n'+
+                    'appPackage: "io.appium.android.apis",\n'+
+                    'appActivity: ".view.TextFields",\n'+
+                    'automationName: "UiAutomator2"\n'+
+                    '}\n'+
+                    '};';
+    fs.writeFile('generated/'+'random.js', content, function(err){
+        if(err) throw err;
+        console.log(err);
+    })
+
+    res.json({link: 'http://localhost:3001/random.js'})
+    
+})
+
+app.post('/updateprofile',function(req,res){
+    var email= req.body.email;
+    var name=req.body.name;
+    var password=req.body.password;
+    var skills=req.body.skills;
+    var role=req.body.role;
+    var projects=req.body.projects;
+    var resume=req.body.resume;
+
+    var query={$set: {username:email,name:name,role:role,skils:skills,projects:projects,resume:resume}};
+    userData.update({username:email},query).exec().then(result=>{
+        console.log("Profile Updated Sucessfully",result);
+        res.send(true);
+    }).catch(err=>console.log(err));
+    
+})
+
+app.post('/createProject', (req, res)=>{
+    const {manager_id, manager_name, app_link, proj_name, proj_desc} = req.body;
+    console.log('MGID ', manager_name)
+    let app = req.files.app;
+    var app_name = req.files.app.name;
+
+    var randomString = "";
+    var group = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for (var i = 0; i < 5; i++){
+        randomString += group.charAt(Math.floor(Math.random() * group.length));
+    }
+
+    app.mv(
+        __dirname + '/scripts/apps/' + randomString + `${app_name}`,
+        function (err) {
+          if (err) throw err;
+          console.log('Done');
+    })
+
+    fileLoc = 'http://localhost:3001/'+randomString+`${app_name}`;
+    const project_id = Math.floor(Math.random()*90000) + 10000;
+    const entry = new ProjectSchema({
+        _id: new mongoose.Types.ObjectId(),
+        app_name: app_name,
+        project_id: project_id,
+        manager_name: manager_name,
+        manager_id: manager_id,
+        app_link: app_link,
+        project_name: proj_name,
+        proj_desc: proj_desc,
+        app_location: fileLoc
+    });
+
+    entry.save().then(result=>{
+        console.log(result);
+        res.send(true);
+    }).catch(err=>{
+        console.log(err);
+    })
+})
+
+app.get('/getManagerProjects', (req, res)=>{
+    const manager_id = req.query.manager_id;
+    console.log(manager_id);
+    ProjectSchema.find({manager_id: manager_id}).exec().then(result=>{
+        console.log(result)
+        res.json(result);
+    })
+})
+
+app.get('/getAllProjects', (req, res)=>{
+    ProjectSchema.find({}).exec().then(result=>{
+        console.log(result)
+        res.json(result);
+    }).catch(err=>{
+        console.log(err);
+    })
+});
+
+app.get('/getApps', (req, res)=>{
+    ApplicationSchema.find({manager_id: req.query.manager_id}).exec().then(result=>{
+        res.json(result);
+    }).catch(err=>{
+        console.log(err);
+    })
+})
+
 
 app.post('/uploadScript', (req, res) => {
     console.log(req);
@@ -67,9 +278,65 @@ app.post('/uploadScript', (req, res) => {
 
 })
 
-app.get('/getScripts', (req, res) => {
-    const {tester_id} = req.query;
+app.post('/checkApplication', (req, res)=>{
+    const tester_id = req.body.tester_id;
+    const project_id = req.body.project_id;
+    ApplicationSchema.find({tester_id: tester_id, project_id: project_id}).exec().then(result=>{
+        if(result.data){
+            res.send(true);
+        }
+        else{
+            res.send(false);
+        }
+    })
+})
 
+app.get('/getMyApps', (req, res)=>{
+    const tester_id = req.query.tester_id;
+    ApplicationSchema.find({tester_id: tester_id}).exec().then(result=>{
+        res.json(result);
+    }).catch(err=>{
+        console.log(err);
+    })
+})
+
+app.get('/getApprovedApps', (req, res)=>{
+    const tester_id = req.query.tester_id;
+    ApplicationSchema.find({tester_id: tester_id, result: true}).exec().then(result=>{
+        res.json(result);
+    }).catch(err=>{
+        console.log(err);
+    })
+})
+
+app.post('/apply', (req, res)=>{
+    const {project_id, manager_name, manager_id, project_name, app_link, app_name, proj_desc, app_location, tester_id} = req.body;
+    const entry = new ApplicationSchema({
+        _id: new mongoose.Types.ObjectId(),
+        project_name: project_name,
+        project_id: project_id,
+        manager_id: manager_id,
+        manager_name: manager_name,
+        app_link: app_link,
+        app_name: app_name,
+        proj_desc: proj_desc,
+        app_location: app_location,
+        tester_id: tester_id,
+        apply: true
+    })
+
+    entry.save().then(result=>{
+        console.log(result);
+        res.send(true);
+    }).catch(err=>{
+        console.log(err);
+    })
+})
+
+app.get('/getScripts', (req, res) => {
+    // const {tester_id} = req.query;
+
+    const tester_id = "123";
     ScriptsSchema.find({tester_id: tester_id}).exec().then(result=>{
         console.log(result);
         res.json(result);

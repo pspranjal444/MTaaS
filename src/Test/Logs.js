@@ -8,7 +8,7 @@ class Logs extends Component{
         super(props);
         this.state = {
             logs: [],
-            tester_id: '123',
+            tester_id: cookie.load('tester_id'),
         }
     }
 
