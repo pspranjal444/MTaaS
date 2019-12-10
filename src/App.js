@@ -31,6 +31,8 @@ import TMTR from './Test/TestMessages';
 import Billing from './Manage/Billing';
 import Map from './Map/Map';
 import TesterCommunity from './Test/TesterCommunity';
+import ProjectOriented from './Manage/ProjectCommunity';
+import ProjectTested from './Test/ProjectCommunity';
 
 // import MetricsManager from './Manage/MetricsManager';
 
@@ -65,6 +67,8 @@ function App() {
         <Route path="/billing" component={Billing}/>
         <Route path="/map" component={Map}/>
         <Route path="/community" component={TesterCommunity}/>
+        <Route path="/pro_com_pro" component={ProjectOriented}/>
+        <Route path="/pro_com_test" component={ProjectTested}/>
         {/* <Route path="/chat" component={Main}/> */}
         {/* <Route path="/metricsManager" component={MetricsManager}/> */}
       </div>

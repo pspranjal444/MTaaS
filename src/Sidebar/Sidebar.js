@@ -17,6 +17,7 @@ class Sidebar extends Component{
                 <a style={{fontSize: "17px"}} href="/genScript">Generate Script</a>
                 <a style={{fontSize: "17px"}} href="/tMT">Chat</a>
                 <a style={{fontSize: "17px"}} href="/community">Community</a>
+                <a style={{fontSize: "17px"}} href="/pro_com_test">Project Community</a>
                 {/* <a href="/viewApps">View Applications</a> */}
             </div>
         );

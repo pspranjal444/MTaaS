@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Sidebar from '../Sidebar/Sidebar';
+import Sidebar from './Sidebar';
 import {Link} from 'react-router-dom';
 import cookie from 'react-cookies';
 

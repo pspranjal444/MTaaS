@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { Widget } from 'react-chat-widget';
 import 'react-chat-widget/lib/styles.css';
 import Dashboard from './Dashboard';
-import Sidebar from '../Sidebar/Sidebar';
+// import Sidebar from '../Sidebar/Sidebar';
 import Axios from 'axios';
 import cookie from 'react-cookies';
 import { thisExpression } from '@babel/types';
@@ -59,7 +59,7 @@ class TestMessages extends Component {
 
         return(
             <div class="container">
-                <Sidebar/>
+                {/* <Sidebar/> */}
                 <Dashboard/>
                 <h2>Chat</h2>
                 <table class="table table-striped">

@@ -14,6 +14,7 @@ class Sidebar extends Component{
                 <a style={{fontSize: "17px"}} href="/updateProfile">Profile</a>
                 <a style={{fontSize: "17px"}} href="/myApps">My Applications</a>
                 <a style={{fontSize: "17px"}} href="/testMessages">Chat</a>
+                <a style={{fontSize: "17px"}} href="/pro_com_pro">Community</a>
                 {/* <a href="/viewApps">View Applications</a> */}
             </div>
         );
