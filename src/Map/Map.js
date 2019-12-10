@@ -12,6 +12,7 @@ const SimpleMap = (props) => {
       <div class="container">
         <Dashboard/>
         <Sidebar/>
+        <h1 style={{color:'black', fontFamily:"Open Sans", fontSize:'35px', fontWeight:'bold', marginLeft:'200px'}}>Google Map View</h1>
         <div style={{ height: '670px', width: '1070px', marginLeft:'250px', marginRight:'250px' }}>
         <GoogleMapReact
           bootstrapURLKeys={{ key: 'replace your api' }}

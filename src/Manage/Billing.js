@@ -42,7 +42,7 @@ class Billings extends Component {
                             <td style={{textAlign: 'center'}}>45547</td>
                             <td style={{textAlign: 'center'}}>13294</td>
                             <td style={{textAlign: 'center'}}>$230</td>
-                            <td style={{textAlign: 'center'}}><PayPalButton amount="0.01" onSuccess={(details, data) => {alert("Transaction completed by")}}/></td>
+                            <td style={{textAlign: 'center', width: "5px"}}><PayPalButton amount="0.01" onSuccess={(details, data) => {alert("Transaction completed by")}}/></td>
                         </tr>
                         <tr>
                             <td style={{textAlign: 'center'}}>26581</td>

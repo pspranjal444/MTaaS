@@ -11,12 +11,12 @@ class Sidebar extends Component{
         return(
             <div class="sidenav">
                 <h3 style={{fontSize: "30px", WebkitTextFillColor: 'white'}}>MTaaS</h3>
-                <a style={{fontSize: "17px"}} href="/createUser">Sign Up</a>
                 <a style={{fontSize: "17px"}} href="/updateProfile">Profile</a>
                 <a style={{fontSize: "17px"}} href="/apply">Apply</a>
                 <a style={{fontSize: "17px"}} href="/myApps">My Applications</a>
                 <a style={{fontSize: "17px"}} href="/genScript">Generate Script</a>
                 <a style={{fontSize: "17px"}} href="/tMT">Chat</a>
+                <a style={{fontSize: "17px"}} href="/community">Community</a>
                 {/* <a href="/viewApps">View Applications</a> */}
             </div>
         );

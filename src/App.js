@@ -30,6 +30,7 @@ import TestMessages from './Manage/TestMessages';
 import TMTR from './Test/TestMessages';
 import Billing from './Manage/Billing';
 import Map from './Map/Map';
+import TesterCommunity from './Test/TesterCommunity';
 
 // import MetricsManager from './Manage/MetricsManager';
 
@@ -63,6 +64,7 @@ function App() {
         <Route path="/tMT" component={TMTR}/>
         <Route path="/billing" component={Billing}/>
         <Route path="/map" component={Map}/>
+        <Route path="/community" component={TesterCommunity}/>
         {/* <Route path="/chat" component={Main}/> */}
         {/* <Route path="/metricsManager" component={MetricsManager}/> */}
       </div>
