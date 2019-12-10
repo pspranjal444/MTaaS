@@ -6,6 +6,7 @@ import BugReporting from './Test/BugReporting';
 import Scripts from './Test/Scripts';
 import Logs from './Test/Logs';
 import Bugs from './Test/Bugs'
+// import Main from './Chatbox/Main';
 import Dashboard from './Test/Dashboard';
 import Projects from './Test/Projects';
 import Metrics from './Test/Metrics';
@@ -25,6 +26,11 @@ import MyApplications from './Test/MyApplications';
 import MetricsManager from './Manage/MetricsManager';
 import ViewApplications from './Manage/ViewApplications';
 import ResourceUsageGraph from './Manage/ResourceUsageGraph';
+import TestMessages from './Manage/TestMessages';
+import TMTR from './Test/TestMessages';
+import Billing from './Manage/Billing';
+import Map from './Map/Map';
+
 // import MetricsManager from './Manage/MetricsManager';
 
 
@@ -53,6 +59,11 @@ function App() {
         <Route path="/login" component={Login}/>
         <Route path="/viewApps" component={ViewApplications}/>
         <Route path="/genScript" component={GenerateScript}/>
+        <Route path="/testMessages" component={TestMessages}/>
+        <Route path="/tMT" component={TMTR}/>
+        <Route path="/billing" component={Billing}/>
+        <Route path="/map" component={Map}/>
+        {/* <Route path="/chat" component={Main}/> */}
         {/* <Route path="/metricsManager" component={MetricsManager}/> */}
       </div>
     </BrowserRouter>

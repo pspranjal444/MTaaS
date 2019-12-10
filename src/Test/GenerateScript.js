@@ -25,16 +25,22 @@ class GenerateScript extends Component {
     }
 
     onClick(){
-        const {tester_id, project_id} = this.state;
-        Axios.post('http://localhost:3001/generateScript', {tester_id, project_id}).then(result=>{
-            console.log(result.data.link);
-            this.setState({
-                fileLink: result.data.link,
-                downloadButton: <button class="btn btn-danger" onClick={()=>{
-                    window.location.href = this.state.fileLink
-                }}>Download</button>
+        const {tester_id, project_id, f_name} = this.state;
+        var app_name_loc = ''; 
+        Axios.get('http://localhost:3001/getProjectDetail', {params: {project_id}}).then(result=>{
+            app_name_loc = result.data[0].app_name_loc
+            Axios.post('http://localhost:3001/generateScript', {tester_id, project_id, app_name_loc, f_name}).then(result=>{
+                console.log(result.data.link);
+                this.setState({
+                    fileLink: result.data.link,
+                    downloadButton: <button class="btn btn-danger" onClick={()=>{
+                        window.location.href = this.state.fileLink
+                    }}>Download</button>
+                })
             })
-        })
+            
+        });
+        
     }
 
     render(){

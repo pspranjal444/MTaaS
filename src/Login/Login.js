@@ -31,14 +31,13 @@ class Login extends Component{
                 console.log(receive[0].role);
                 if(receive[0].role === "T")
                 {
-                    this.props.history.push('/metrics');
-                    console.log('MY ID IN LOGIN', receive[0].user_id)
                     cookie.save('tester_id', receive[0].user_id);
+                    this.props.history.push('/metrics');
                 }
                 else if(receive[0].role==='M')
                 {
-                    this.props.history.push('/metricsManager');
                     cookie.save('manager_id', receive[0].user_id);
+                    this.props.history.push('/metricsManager');
                 }
 
     });
@@ -60,9 +59,15 @@ class Login extends Component{
         return(
             <div>
                 <div class="container">
-                    <Sidebar></Sidebar>
-                    <Dashboard/>
-                    <div class="jumbotron" style={{width: '700px', height: '400px', marginLeft: '15%'}}>
+                    <div style={{display: 'flex', marginLeft: '150px'}}>
+                        <div>
+                            <img src={require('./logo.png')} width="150px" height="120px"></img>                       
+                        </div>
+                        <div>
+                            <p style={{fontSize: '90px'}}>MTaaS</p>
+                        </div>
+                    </div>
+                    <div class="jumbotron" style={{width: '700px', height: '350px', marginLeft: '15%'}}>
                         <div style={{marginLeft: '-475px'}}><h2>Sign In</h2></div>
                         <br/>
                         <div >
@@ -73,6 +78,8 @@ class Login extends Component{
                         </div>
                         <div>
                             <button type="submit" value="SignIN" onClick={this.SigninData.bind(this)} name="SignIN" class="btn btn-success" >Sign In</button><br/><br/>
+                            <br/>
+                            <a href="/createUser">Sign Up</a>
                         </div>
                     </div>
                 </div>

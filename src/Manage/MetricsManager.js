@@ -3,6 +3,8 @@ import Dashboard from '../Manage/Dashboard';
 import ReactApexChart from 'react-apexcharts'
 import ResourceUsageGraph from './ResourceUsageGraph';
 import TestersGraph from './TestersGraph';
+import { SSL_OP_COOKIE_EXCHANGE } from 'constants';
+import cookie from 'react-cookies';
 class MetricsManager extends Component {
     constructor(){
         super();
@@ -81,6 +83,7 @@ class MetricsManager extends Component {
     }
 
     render(){
+        var manager_id = cookie.load('manager_id')
         return (
             <div class="container">
                 <Dashboard/>

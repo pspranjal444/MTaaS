@@ -10,6 +10,7 @@ const ProjectSchema = mongoose.Schema({
     app_name: String,
     proj_desc: String,
     app_location: String,
+    app_name_loc: String,
 })
 
 module.exports = mongoose.model('ProjectSchema', ProjectSchema); 

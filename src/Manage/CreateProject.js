@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import Dashboard from './Dashboard';
 import Axios from 'axios';
 import cookie from 'react-cookies';
+import {Redirect} from 'react-router';
+
 
 class CreateProject extends Component{
     constructor(props){
@@ -51,8 +53,13 @@ class CreateProject extends Component{
     }
 
     render(){
+        let redirectVar = null;
+        if(!cookie.load('manager_id')){
+            redirectVar = <Redirect to="/login"/>
+        }
         return(
             <div class="container">
+                {redirectVar}
                     <Dashboard/>
                     <div class="jumbotron" style={{width: '700px', height: '750px', marginLeft: '15%'}}>
                         <div style={{marginLeft: '-375px'}}><h2>Create a Project</h2></div>

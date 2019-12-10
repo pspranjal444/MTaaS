@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
 import Sidebar from '../Sidebar/Sidebar';
 import {Link} from 'react-router-dom';
+import cookie from 'react-cookies';
 
 class Dashboard extends Component{
     constructor(props){
-        super(props)
+        super(props);
     }
 
     render(){
+        console.log('NAMEEEEEE', this.props.name);
         return(
             <div>
                 <Sidebar/>
@@ -21,17 +23,19 @@ class Dashboard extends Component{
                             <li><Link to="/createProject">Create Project</Link></li>
                             <li><Link to="/myprojects">My Projects</Link></li>
                             <li><Link to="/viewApps">View Applications</Link></li>
-                            <li><Link to="#">My Testers</Link></li>
-                            <li><Link to="#">Resources</Link></li>
-                            <li><Link to="#">Billing</Link></li>
+                            <li><Link to="/testMessages">Messages</Link></li>
+                            <li><Link to="/map">My Testers</Link></li>
+                            <li><Link to="/billing">Billing</Link></li>
                             {/* <li><Link to="/bugs">View Bugs</Link></li>
                             <li><Link to="/createDevice">Create Device</Link></li>
                             <li><Link to="/viewDevices">View Devices</Link></li> */}
                         </ul>
 
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                            <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome, {cookie.load('manager_id')}</a></li>
+                            <li><a href="/" onClick={()=>{
+                                cookie.remove('manager_id');
+                            }}><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
                         </ul>
                     </div>
                 </nav>

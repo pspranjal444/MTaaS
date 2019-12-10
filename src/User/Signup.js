@@ -60,8 +60,14 @@ class Signup extends Component{
     {
         return(
             <div class="container">
-                <Sidebar></Sidebar>
-                <Dashboard/>
+                <div style={{display: 'flex', marginLeft: '150px'}}>
+                    <div>
+                        <img src={require('./logo.png')} width="150px" height="120px"></img>                       
+                    </div>
+                    <div>
+                        <p style={{fontSize: '90px'}}>MTaaS</p>
+                    </div>
+                </div>
                 <div class="jumbotron" style={{width: '700px', height: '400px', marginLeft: '15%'}}>
                 <div style={{marginLeft: '-475px'}}><h2>Sign Up</h2></div>
                     <br/>
@@ -69,7 +75,7 @@ class Signup extends Component{
                         <div>
                             <input type="text" id="name" name="name" class="form-control" width="50px" value={this.state.nameS} onChange={this.name.bind(this)} placeholder="Enter your name"  /><br/>
                         </div>
-                        <div >
+                        <div>
                             <input type="email"  id="email" class="form-control" name="email" value={this.state.emailS} onChange={this.email.bind(this)} placeholder="Enter your email" /><br/>
                         </div>
                         <div >
@@ -82,6 +88,8 @@ class Signup extends Component{
                         </div>
                         <div>
                             <button type="submit" align="center"  class="btn btn-success" value="submit" onClick={this.SubmitData.bind(this)} name="SignIN" id="SignIN">Submit</button>
+                            <br/>    
+                            <a href="/">Sign In</a>
                         </div>
                     </div>
                 </div>

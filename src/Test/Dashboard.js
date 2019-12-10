@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import Sidebar from '../Sidebar/Sidebar';
+import cookie from 'react-cookies';
 class Dashboard extends Component{
     constructor(props){
         super(props);
@@ -26,8 +27,10 @@ class Dashboard extends Component{
                         </ul>
 
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                            <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome, {cookie.load('tester_id')}</a></li>
+                            <li><a href="/login" onClick={()=>{
+                                cookie.remove('tester_id');
+                            }}><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
                         </ul>
                     </div>
                 </nav>

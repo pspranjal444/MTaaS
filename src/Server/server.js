@@ -13,6 +13,13 @@ const Device = require('../../models/DeviceSchema');
 const userData = require('../../models/userData');
 const ProjectSchema = require('../../models/ProjectSchema');
 const ApplicationSchema = require('../../models/ApplicationSchema');
+const Messages = require('../../models/Messages');
+// const port = 8002;
+// var server = require("http").Server(app);
+// const io = require("socket.io")(server);
+// const users = require("./configs/users");
+
+
 mongoose.connect('mongodb+srv://mtaas:mtaas@cluster0-jzndm.mongodb.net/test?retryWrites=true&w=majority', { useNewUrlParser: true });
 
 app.use(cors())
@@ -126,6 +133,8 @@ app.post('/decline', (req, res)=>{
 })
 
 app.post('/generateScript', (req, res)=>{
+    const {tester_id, project_id, app_name_loc, f_name} = req.body;
+    console.log(app_name_loc)
     const content = 'const wdio = require("webdriverio");\n'+
                     'const assert = require("assert");\n'+
                     'const db = require("./database");\n'+
@@ -134,20 +143,27 @@ app.post('/generateScript', (req, res)=>{
                     'port: 4723,\n'+
                     '   capabilities: {\n'+
                     '   platformName: "Android",\n'+
-                    'platformVersion: "8",\n'+
-                    'deviceName: "Android Emulator",\n'+
-                    'app: __dirname + "/apps/" + "ApiDemos-debug.apk",\n'+
-                    'appPackage: "io.appium.android.apis",\n'+
-                    'appActivity: ".view.TextFields",\n'+
-                    'automationName: "UiAutomator2"\n'+
-                    '}\n'+
-                    '};';
-    fs.writeFile('generated/'+'random.js', content, function(err){
+                    '   platformVersion: "8",\n'+
+                    '   deviceName: "Android Emulator",\n'+
+                    '   app: __dirname + "/apps/"' + app_name_loc +',\n'+
+                    '   appPackage: "io.appium.android.apis",\n'+
+                    '   appActivity: ".view.TextFields",\n'+
+                    '   automationName: "UiAutomator2"\n'+
+                    '  }\n'+
+                    '};\n';
+
+
+    var group = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var randomString = '';
+    for (var i = 0; i < 5; i++){
+        randomString += group.charAt(Math.floor(Math.random() * group.length));
+    }
+    fs.writeFile('generated/'+randomString+f_name+'.js', content, function(err){
         if(err) throw err;
         console.log(err);
     })
 
-    res.json({link: 'http://localhost:3001/random.js'})
+    res.json({link: 'http://localhost:3001/'+randomString+f_name+'.js'})
     
 })
 
@@ -199,7 +215,8 @@ app.post('/createProject', (req, res)=>{
         app_link: app_link,
         project_name: proj_name,
         proj_desc: proj_desc,
-        app_location: fileLoc
+        app_location: fileLoc,
+        app_name_loc: randomString+app_name
     });
 
     entry.save().then(result=>{
@@ -227,6 +244,14 @@ app.get('/getAllProjects', (req, res)=>{
         console.log(err);
     })
 });
+
+app.get('/getProjectDetail', (req, res)=>{
+    var {project_id} = req.query;
+    ProjectSchema.find({project_id: project_id}).exec().then(result=>{
+        console.log(result);
+        res.json(result);
+    })
+})
 
 app.get('/getApps', (req, res)=>{
     ApplicationSchema.find({manager_id: req.query.manager_id}).exec().then(result=>{
@@ -374,6 +399,24 @@ app.post('/runScript', (req, res) => {
     }
 })
 
+app.post('/createMessage', (req, res)=>{
+    const msg = req.body.msg;
+    const entry = new Messages({
+        _id: new mongoose.Types.ObjectId(),
+        msg: msg
+    })
+    entry.save().then(result=>{
+        console.log(result);
+        res.send(true);
+    })
+})
+
+app.get('/messages', (req, res)=>{
+    Messages.find({}).then(result=>{
+        res.json(result);
+    })
+})
+
 app.post('/deleteScript', (req, res) => {
     const {_id, tester_id, project_id} = req.body;
     var query = {_id: _id, tester_id: tester_id, project_id: project_id}
@@ -391,6 +434,14 @@ app.post('/deleteLog', (req, res) => {
     }).catch(err=>{
         console.log(err);
     })
+})
+
+app.post('/makePayment', (req, res)=>{
+    const {tester_id, project_id} = req.body;
+    ProjectSchema.find({project_id: project_id}).exec().then(result=>{
+        console.log(result);
+    })
+
 })
 
 app.get('/downloadLog', (req, res) => {
@@ -414,6 +465,10 @@ app.post('/createDevice', (req, res) => {
         res.send(true);
     })
 });
+
+app.get('/getAmount', (req, res)=>{
+    
+})
 
 app.get('/getDevices', (req, res) => {
     const {tester_id} = req.query;
@@ -467,11 +522,70 @@ app.get('/getBugsList', (req, res) => {
     BugSchema.find().exec().then(result=>{
         res.json(result);
     })
+});
+
+app.get('/getTesterProjects', (req, res)=>{
+    
 })
 
 app.post('/createTestReport', (req, res) => {
 
 })
+
+
+
+
+
+// var clients = {};
+
+// io.on("connection", function(client) {
+//   client.on("sign-in", e => {
+//     let user_id = e.id;
+//     if (!user_id) return;
+//     client.user_id = user_id;
+//     if (clients[user_id]) {
+//       clients[user_id].push(client);
+//     } else {
+//       clients[user_id] = [client];
+//     }
+//   });
+
+//   client.on("message", e => {
+//     let targetId = e.to;
+//     let sourceId = client.user_id;
+//     if(targetId && clients[targetId]) {
+//       clients[targetId].forEach(cli => {
+//         cli.emit("message", e);
+//       });
+//     }
+
+//     if(sourceId && clients[sourceId]) {
+//       clients[sourceId].forEach(cli => {
+//         cli.emit("message", e);
+//       });
+//     }
+//   });
+
+//   client.on("disconnect", function() {
+//     if (!client.user_id || !clients[client.user_id]) {
+//       return;
+//     }
+//     let targetClients = clients[client.user_id];
+//     for (let i = 0; i < targetClients.length; ++i) {
+//       if (targetClients[i] == client) {
+//         targetClients.splice(i, 1);
+//       }
+//     }
+//   });
+// });
+
+// app.get("/users", (req, res) => {
+//   res.send({ data: users });
+// });
+
+// server.listen(port, () =>
+//   console.log(`Example app listening on port ${port}!`)
+// );
 
 
 

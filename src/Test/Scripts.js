@@ -63,7 +63,7 @@ class Scripts extends Component{
     render(){
         let data = this.state.script_data.map(entry=>{
             return(
-                <tr>
+                <tr key={entry._id}>
                     <td style={{textAlign: 'center'}}>{entry.script_name}</td>
                     <td style={{textAlign: 'center'}}>{entry.project_id}</td>
                     <td style={{textAlign: 'center'}}>{entry.tester_id}</td>
@@ -76,8 +76,9 @@ class Scripts extends Component{
                         });
                         Axios.post('http://localhost:3001/runScript', {_id, tester_id, project_id, file_name}).then(result=>{
                             console.log(result);
-
-                            
+                            Axios.post('http://localhost:3001/makePayment', {tester_id, project_id}).then(result=>{
+                                console.log(result);
+                            })
 
                             if(result.data==true){
                                 // alert('Tests Executed Successfully. Please view the log report');
