@@ -16,7 +16,7 @@ class Dashboard extends Component{
                             <a class="navbar-brand" href="#">MTaaS</a>
                         </div>
                         <ul class="nav navbar-nav">
-                            <li class="active"><Link to="/">Home</Link></li>
+                            <li class="active"><Link to="/metrics">Home</Link></li>
                             <li><Link to="/scripts">View Scripts</Link></li>
                             <li><Link to="/logs">View Logs</Link></li>
                             <li><Link to="/report_bug">Report Bug</Link></li>

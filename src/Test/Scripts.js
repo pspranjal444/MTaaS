@@ -62,11 +62,14 @@ class Scripts extends Component{
 
     render(){
         let data = this.state.script_data.map(entry=>{
+            var date = new Date(entry.date);
+            date =  date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear()
             return(
                 <tr key={entry._id}>
+                    
                     <td style={{textAlign: 'center'}}>{entry.script_name}</td>
-                    <td style={{textAlign: 'center'}}>{entry.project_id}</td>
                     <td style={{textAlign: 'center'}}>{entry.tester_id}</td>
+                    <td style={{textAlign: 'center'}}>{date}</td>
                     <td style={{textAlign: 'center'}}><a href={entry.file_location} download>Download</a></td>
                     <td style={{textAlign: 'center'}}><a href="#" onClick={()=>{
                         const {_id, tester_id, project_id, file_name} = entry;
@@ -121,8 +124,8 @@ class Scripts extends Component{
                             </div>
                         <div class="modal-body">
                             <input type="text" name="script_name" id="script_name" placeholder="Script Name" onChange={this.onChange}/><br/><br/>
-                            <input type="text" name="tester_id" id="tester_id" placeholder="Tester ID" onChange={this.onChange}/><br/><br/>
-                            <input type="text" name="project_id" id="project_id" placeholder="Project ID" onChange={this.onChange}/>
+                            {/* <input type="text" name="tester_id" id="tester_id" placeholder="Tester ID" onChange={this.onChange}/><br/><br/>
+                            <input type="text" name="project_id" id="project_id" placeholder="Project ID" onChange={this.onChange}/> */}
                             <input type="file" name="script" id="script" onChange={this.onChangeFile.bind(this)}/>
                             <button type="button" class="btn btn-success" onClick={this.onClick}>Submit</button>
                         </div>

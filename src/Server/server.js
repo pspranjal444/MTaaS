@@ -293,6 +293,7 @@ app.post('/uploadScript', (req, res) => {
         project_id: project_id,
         file_name: filename,
         file_location: fileLoc,
+        date: Date.now()
     })
 
     data.save().then(result=>{
@@ -364,8 +365,9 @@ app.post('/apply', (req, res)=>{
 app.get('/getScripts', (req, res) => {
     // const {tester_id} = req.query;
 
-    const tester_id = "123";
-    ScriptsSchema.find({tester_id: tester_id}).exec().then(result=>{
+    const tester_id = req.query.tester_id;
+    const project_id = req.query.project_id;
+    ScriptsSchema.find({tester_id: tester_id, project_id: project_id}).exec().then(result=>{
         console.log(result);
         res.json(result);
     }).catch(err=>{

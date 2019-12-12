@@ -36,6 +36,9 @@ import ProjectTested from './Test/ProjectCommunity';
 import NewDashboard from './Manage/NewDashboard';
 import MyTesters from './Manage/MyTesters';
 import ProjectPage from './Manage/ProjectPage';
+import NewDashboardT from './Test/NewDashboard';
+import MyProjectsT from './Test/MyProjects';
+import ProjectPageT from './Test/ProjectPage';
 
 
 // import MetricsManager from './Manage/MetricsManager';
@@ -48,7 +51,7 @@ function App() {
         
         {/* <BugReporting/> */}
         <Route exact path="/" component={Login}/>
-        <Route path="/metrics" component={Metrics}/>
+        <Route path="/metrics" component={NewDashboardT}/>
         <Route path="/metricsManager" component={NewDashboard}/>
         <Route path="/createUser" component={SignUp}/>
         <Route path="/updateProfile" component={UpdateProfile}/>  
@@ -75,6 +78,9 @@ function App() {
         <Route path="/pro_com_test" component={ProjectTested}/>
         <Route path="/myTesters" component={MyTesters}/>
         <Route path="/myprojectpage" component={ProjectPage}/>
+        <Route path="/mypt" component={MyProjectsT}/>
+        <Route path="/ppt" component={ProjectPageT}/>
+
         {/* <Route path="/chat" component={Main}/> */}
         {/* <Route path="/metricsManager" component={MetricsManager}/> */}
       </div>

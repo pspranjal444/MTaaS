@@ -7,6 +7,7 @@ const ScriptsSchema = mongoose.Schema({
     project_id: String,
     file_name: String,
     file_location: String,
+    date: Date
 })
 
 module.exports = mongoose.model('ScriptsSchema', ScriptsSchema); 
