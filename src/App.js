@@ -33,6 +33,10 @@ import Map from './Map/Map';
 import TesterCommunity from './Test/TesterCommunity';
 import ProjectOriented from './Manage/ProjectCommunity';
 import ProjectTested from './Test/ProjectCommunity';
+import NewDashboard from './Manage/NewDashboard';
+import MyTesters from './Manage/MyTesters';
+import ProjectPage from './Manage/ProjectPage';
+
 
 // import MetricsManager from './Manage/MetricsManager';
 
@@ -45,7 +49,7 @@ function App() {
         {/* <BugReporting/> */}
         <Route exact path="/" component={Login}/>
         <Route path="/metrics" component={Metrics}/>
-        <Route path="/metricsManager" component={MetricsManager}/>
+        <Route path="/metricsManager" component={NewDashboard}/>
         <Route path="/createUser" component={SignUp}/>
         <Route path="/updateProfile" component={UpdateProfile}/>  
         <Route path="/apply" component={Apply}/>
@@ -69,6 +73,8 @@ function App() {
         <Route path="/community" component={TesterCommunity}/>
         <Route path="/pro_com_pro" component={ProjectOriented}/>
         <Route path="/pro_com_test" component={ProjectTested}/>
+        <Route path="/myTesters" component={MyTesters}/>
+        <Route path="/myprojectpage" component={ProjectPage}/>
         {/* <Route path="/chat" component={Main}/> */}
         {/* <Route path="/metricsManager" component={MetricsManager}/> */}
       </div>

@@ -12,7 +12,8 @@ class Login extends Component{
         this.state={
             id:'',
             pwd:'',
-            login:''
+            login:'',
+            roleS: ''
         }
     }
 
@@ -28,13 +29,14 @@ class Login extends Component{
                 var receive = response.data;
                 console.log(response.data);
                 cookie.save('email', this.state.id);
+                cookie.save('name', receive[0].name)
                 console.log(receive[0].role);
-                if(receive[0].role === "T")
+                if(receive[0].role === "T" && this.state.roleS === 'T')
                 {
                     cookie.save('tester_id', receive[0].user_id);
                     this.props.history.push('/metrics');
                 }
-                else if(receive[0].role==='M')
+                else if(receive[0].role==='M' && this.state.roleS === 'M')
                 {
                     cookie.save('manager_id', receive[0].user_id);
                     this.props.history.push('/metricsManager');
@@ -51,6 +53,11 @@ class Login extends Component{
     LoginID(event){
         this.setState({
             id:event.target.value
+        })
+    }
+    roleChangeHandler(event){
+        this.setState({
+            roleS:event.target.value
         })
     }
     render()
@@ -75,6 +82,12 @@ class Login extends Component{
                         </div>
                         <div >
                             <input type="password" class="form-control" name="password" value={this.state.pwd} onChange={this.LoginPwd.bind(this)} placeholder="Enter your password" /><br/>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="radio-inline"><input class="" type="radio"  name="role" value="T" onChange={this.roleChangeHandler.bind(this)} required /><label>Tester</label><br/></label>
+                            {/* <label class="radio-inline"><input class="" type="radio" name="role" value="A" onChange={this.roleChangeHandler.bind(this)} required /><label>Admin</label><br/></label> */}
+                            <label class="radio-inline"><input class="" type="radio" name="role" value="M" onChange={this.roleChangeHandler.bind(this)} required /><label>Manager</label><br/></label>
                         </div>
                         <div>
                             <button type="submit" value="SignIN" onClick={this.SigninData.bind(this)} name="SignIN" class="btn btn-success" >Sign In</button><br/><br/>

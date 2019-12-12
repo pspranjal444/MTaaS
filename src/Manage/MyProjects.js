@@ -34,22 +34,27 @@ class MyProjects extends Component{
         // let details = null;
         let projects = this.state.records.map((entry)=>{
             console.log(entry.project_name)
+            var date = new Date(entry.date);
+            date =  date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear()
             return(
                 <tr key={entry.project_id}>
                     <td style={{textAlign: 'center'}}>{entry.project_name}</td>
                     <td style={{textAlign: 'center'}}>{entry.project_id}</td>
                     <td style={{textAlign: 'center'}}>{entry.manager_name}</td>
-                    <td style={{textAlign: 'center'}}><button class="btn btn-success" data-toggle="modal" data-target="#myModal" onClick={()=>{
-                        this.setState({
-                            project_name: entry.project_name,
-                            project_id: entry.project_id,
-                            manager_name: entry.manager_name,
-                            manager_id: entry.manager_id,
-                            proj_desc: entry.proj_desc,
-                            app_link: entry.app_link,
-                            app_name: entry.app_name
-                        })
-                    }}>View</button></td>
+                    <td style={{textAlign: 'center'}}>{date}</td>
+                    <td style={{textAlign: 'center'}}><button class="btn btn-success" onClick={()=>{
+                        cookie.save('project_id', entry.project_id);
+                        // this.setState({
+                        //     project_name: entry.project_name,
+                        //     project_id: entry.project_id,
+                        //     manager_name: entry.manager_name,
+                        //     manager_id: entry.manager_id,
+                        //     proj_desc: entry.proj_desc,
+                        //     app_link: entry.app_link,
+                        //     app_name: entry.app_name
+                        // })
+                        
+                    }}><a href="/myprojectpage">View</a></button></td>
                 </tr>
             )
         })
@@ -69,7 +74,7 @@ class MyProjects extends Component{
                                            <p><b>Manager Name: </b>{this.state.manager_name}</p>
                                            <p><b>Manager ID: </b>{this.state.manager_id}</p>
                                            <p><b>Description: </b>{this.state.proj_desc}</p>
-                                           <p><b>Application Link: </b><a href="#">{this.state.app_link}</a></p>
+                                           <p><b>Application Link: </b><a href={this.state.app_link}>{this.state.app_link}</a></p>
                                          </div>
                                          <div class="modal-footer">
                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -87,6 +92,7 @@ class MyProjects extends Component{
                             <th style={{textAlign: 'center'}}>Project Name</th>
                             <th style={{textAlign: 'center'}}>Project ID</th>
                             <th style={{textAlign: 'center'}}>Manager</th>
+                            <th style={{textAlign: 'center'}}>Date Created</th>
                             <th style={{textAlign: 'center'}}>View</th>
                         </tr>
                     </thead>

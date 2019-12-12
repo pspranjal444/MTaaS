@@ -11,6 +11,7 @@ const ProjectSchema = mongoose.Schema({
     proj_desc: String,
     app_location: String,
     app_name_loc: String,
+    date: Date
 })
 
 module.exports = mongoose.model('ProjectSchema', ProjectSchema); 

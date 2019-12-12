@@ -6,7 +6,7 @@ const userSchema=mongoose.Schema({
     username: String,
     password: String,
     role: String,
-    skils: String,
+    skills: String,
     projectid:String,
     projects: String,
     resume: String,

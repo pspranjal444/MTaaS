@@ -216,7 +216,8 @@ app.post('/createProject', (req, res)=>{
         project_name: proj_name,
         proj_desc: proj_desc,
         app_location: fileLoc,
-        app_name_loc: randomString+app_name
+        app_name_loc: randomString+app_name,
+        date: Date.now()
     });
 
     entry.save().then(result=>{
@@ -334,6 +335,8 @@ app.get('/getApprovedApps', (req, res)=>{
     })
 })
 
+
+
 app.post('/apply', (req, res)=>{
     const {project_id, manager_name, manager_id, project_name, app_link, app_name, proj_desc, app_location, tester_id} = req.body;
     const entry = new ApplicationSchema({
@@ -370,6 +373,19 @@ app.get('/getScripts', (req, res) => {
     })
 })
 
+app.get('/getScriptsM', (req, res) => {
+    // const {tester_id} = req.query;
+
+    // const tester_id = "123";
+    const {project_id} = req.query;
+    ScriptsSchema.find({project_id: project_id}).exec().then(result=>{
+        console.log(result);
+        res.json(result);
+    }).catch(err=>{
+        console.log(err);
+    })
+})
+
 app.post('/uploadLogs', (req, res) => {
 
 })
@@ -377,7 +393,7 @@ app.post('/uploadLogs', (req, res) => {
 app.get('/getLogs', (req, res) => {
     const {tester_id} = req.query;
 
-    Logs.find({tester_id: tester_id}).exec().then(result=>{
+    Logs.find({tester_id: '123'}).exec().then(result=>{
         console.log(result);
         res.json(result);
     })
@@ -531,6 +547,13 @@ app.get('/getTesterProjects', (req, res)=>{
 app.post('/createTestReport', (req, res) => {
 
 })
+
+app.get('/getTesters', (req, res)=>{
+    userData.find({role: 'T'}).exec().then(result=>{
+        console.log(result);
+        res.json(result);
+    })
+});
 
 
 

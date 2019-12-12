@@ -21,7 +21,7 @@ class Dashboard extends Component{
                         <ul class="nav navbar-nav">
                             <li class="active"><Link to="/metricsManager">Home</Link></li>
                             <li><Link to="/createProject">Create Project</Link></li>
-                            <li><Link to="/myprojects">My Projects</Link></li>
+                            {/* <li><Link to="/myprojects">My Projects</Link></li> */}
                             <li><Link to="/viewApps">View Applications</Link></li>
                             <li><Link to="/testMessages">Messages</Link></li>
                             <li><Link to="/map">My Testers</Link></li>
@@ -32,7 +32,7 @@ class Dashboard extends Component{
                         </ul>
 
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome, {cookie.load('manager_id')}</a></li>
+                            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome, {cookie.load('name')}</a></li>
                             <li><a href="/" onClick={()=>{
                                 cookie.remove('manager_id');
                             }}><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
