@@ -42,9 +42,10 @@ class MyProjects extends Component{
                     <td style={{textAlign: 'center'}}>{entry.project_id}</td>
                     <td style={{textAlign: 'center'}}>{entry.manager_name}</td>
                     <td style={{textAlign: 'center'}}>{date}</td>
-                    <td style={{textAlign: 'center'}}><button class="btn btn-success" onClick={()=>{
+                    <td style={{textAlign: 'center'}}><a href="/ppt"><button class="btn btn-success" onClick={()=>{
                         cookie.save('project_id', entry.project_id);
-                        cookie.save('project_name', entry.project_name)
+                        cookie.save('project_name', entry.project_name);
+                        cookie.save('proj_desc', entry.proj_desc)
                         // this.setState({
                         //     project_name: entry.project_name,
                         //     project_id: entry.project_id,
@@ -55,7 +56,7 @@ class MyProjects extends Component{
                         //     app_name: entry.app_name
                         // })
                         
-                    }}><a href="/ppt">View</a></button></td>
+                    }}>View</button></a></td>
                 </tr>
             )
         })

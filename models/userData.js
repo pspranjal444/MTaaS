@@ -10,7 +10,9 @@ const userSchema=mongoose.Schema({
     projectid:String,
     projects: String,
     resume: String,
-    user_id: String
+    user_id: String,
+    lat: Number,
+    lon: Number
 })
 
 module.exports=mongoose.model('userData',userSchema);

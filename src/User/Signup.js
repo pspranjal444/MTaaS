@@ -43,11 +43,18 @@ class Signup extends Component{
         this.setState({
             signup: event.target.value
         })
-    axios.post('http://localhost:3001/signup', {
+        
+        axios.get('http://ip-api.com/json/').then(result=>{
+            console.log(result.data.lat);
+            console.log(result.data.lon);
+
+            axios.post('http://localhost:3001/signup', {
             Name: this.state.nameS,
             Email: this.state.emailS,
             Password:this.state.pwdS,
-            Role:this.state.role
+            Role:this.state.role,
+            lat: result.data.lat,
+            lon: result.data.lon
         })
         .then(response=>{
             console.log("Data Inserted");
@@ -55,6 +62,8 @@ class Signup extends Component{
             //this.props.history.push('/'); //FOR GOINB BACK TO MAIN PAGE AFTER CLICKING ON SIGN
         
     });
+        });
+    
     } 
     render()
     {
@@ -68,7 +77,7 @@ class Signup extends Component{
                         <p style={{fontSize: '90px'}}>MTaaS</p>
                     </div>
                 </div>
-                <div class="jumbotron" style={{width: '700px', height: '400px', marginLeft: '15%'}}>
+                <div class="jumbotron" style={{width: '700px', height: '420px', marginLeft: '15%'}}>
                 <div style={{marginLeft: '-475px'}}><h2>Sign Up</h2></div>
                     <br/>
                     <div class="form-group">
@@ -88,7 +97,7 @@ class Signup extends Component{
                         </div>
                         <div>
                             <button type="submit" align="center"  class="btn btn-success" value="submit" onClick={this.SubmitData.bind(this)} name="SignIN" id="SignIN">Submit</button>
-                            <br/>    
+                            <br/><br/>    
                             <a href="/">Sign In</a>
                         </div>
                     </div>

@@ -17,6 +17,7 @@ import {Route} from 'react-router-dom';
 import Login from './Login/Login';
 import {BrowserRouter} from 'react-router-dom';
 // import UpdateProfile from './UpdateProfile/UpdateProfile';
+import UpdateProfileT from './User/UpdateProfileT';
 import UpdateProfile from './User/UpdateProfile';
 import CreateProject from './Manage/CreateProject';
 import MyProjects from './Manage/MyProjects';
@@ -39,6 +40,7 @@ import ProjectPage from './Manage/ProjectPage';
 import NewDashboardT from './Test/NewDashboard';
 import MyProjectsT from './Test/MyProjects';
 import ProjectPageT from './Test/ProjectPage';
+import Main from './components/Main';
 
 
 // import MetricsManager from './Manage/MetricsManager';
@@ -54,7 +56,8 @@ function App() {
         <Route path="/metrics" component={NewDashboardT}/>
         <Route path="/metricsManager" component={NewDashboard}/>
         <Route path="/createUser" component={SignUp}/>
-        <Route path="/updateProfile" component={UpdateProfile}/>  
+        <Route path="/updateProfile" component={UpdateProfileT}/>
+        <Route path="/updateProfileM" component={UpdateProfile}/>  
         <Route path="/apply" component={Apply}/>
         <Route path="/myApps" component={MyApplications}/>
         <Route path="/createProject" component={CreateProject}/> 
@@ -80,6 +83,7 @@ function App() {
         <Route path="/myprojectpage" component={ProjectPage}/>
         <Route path="/mypt" component={MyProjectsT}/>
         <Route path="/ppt" component={ProjectPageT}/>
+        <Route path="/chatkit" component={Main}/>
 
         {/* <Route path="/chat" component={Main}/> */}
         {/* <Route path="/metricsManager" component={MetricsManager}/> */}

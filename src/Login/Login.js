@@ -74,7 +74,7 @@ class Login extends Component{
                             <p style={{fontSize: '90px'}}>MTaaS</p>
                         </div>
                     </div>
-                    <div class="jumbotron" style={{width: '700px', height: '350px', marginLeft: '15%'}}>
+                    <div class="jumbotron" style={{width: '700px', height: '360px', marginLeft: '15%'}}>
                         <div style={{marginLeft: '-475px'}}><h2>Sign In</h2></div>
                         <br/>
                         <div >
@@ -91,7 +91,7 @@ class Login extends Component{
                         </div>
                         <div>
                             <button type="submit" value="SignIN" onClick={this.SigninData.bind(this)} name="SignIN" class="btn btn-success" >Sign In</button><br/><br/>
-                            <br/>
+                            {/* <br/> */}
                             <a href="/createUser">Sign Up</a>
                         </div>
                     </div>

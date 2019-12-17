@@ -1,366 +1,302 @@
-import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
-// import './App.css';
-// import 'bootstrap/dist/css/bootstrap.css';
-import { Link } from 'react-router-dom';
-// import Navigation from './Navigation';
-import { Modal } from 'react-bootstrap';
-// import { item, Icon, cloud, CardTitle, Textarea,ProgressBar, Container, SideNav, SideNavItem, MediaBox, Row, Col, Card, Button, Table, Select, Collection, CollectionItem } from 'react-materialize';
-
-import { FaUserEdit, FaFolder } from "react-icons/fa";
-// import { FaUserEdit ,FaFolder,IoMdFolderOpen} from "react-icons/IoIoS";
-import axios from 'axios';
+import React, {Component} from 'react';
 import cookie from 'react-cookies';
-import { Redirect } from 'react-router';
-import { Button, Card } from 'react-bootstrap';
 import Dashboard from './Dashboard';
+import Axios from 'axios';
 
-// import listReactFiles from 'list-react-files';
-//Define a Login Component
-class ProjectPage extends Component {
-    //call the constructor method
-    constructor(props) {
-        //Call the constrictor of Super class i.e The Component
+
+
+class Scripts extends Component{
+    constructor(props){
         super(props);
-        //maintain the state required for this component
         this.state = {
-            email: localStorage.getItem('user'),
-            password: "",
-            authFlag: false,
-            error_message: "",
-            repoData: [],
-            selectedFile: null,
-            fileData: [],
-            show: false,
-            setShow: false,
-            repoId: "",
-            link_show: false,
-            link_setShow: false,
-            linkData: []
+            script_name: '',
+            project_id: cookie.load('project_id'),
+            tester_id: cookie.load('tester_id'),
+            script: null,
+            script_data: [],
+            notifications: [],
+            spinner: ''
         }
-        //Bind the handlers to this class
-        this.handleClose = this.handleClose.bind(this);
-        this.handleShow = this.handleShow.bind(this);
-        this.link_handleClose = this.link_handleClose.bind(this);
-        this.link_handleShow = this.link_handleShow.bind(this);
+        this.onChange = this.onChange.bind(this);
+        // this.onChangeFile = this.onChangeFile.bind(this);
+        this.onClick = this.onClick.bind(this);
+        // this.onSubmit = this.onClick.bind(this);
     }
-    //Call the Will Mount to set the auth Flag to false
-    // componentWillMount() {
-    //     this.setState({
-    //         authFlag: false
-    //     })
-    // }
-    handleClose = () => {
+
+    onSubmit(){
+        const {project_id, notification} = this.state;
+        Axios.post('http://localhost:3001/notify', {project_id, notification}).then(result=>{
+            console.log(result);
+            alert('Notification Created');
+        })
+    }
+
+    onChange(event){
         this.setState({
-            setShow: false,
-            show: false
+            [event.target.name]: event.target.value
         })
     }
-    handleShow = (e) => {
 
+    onChangeFile(event){
         this.setState({
-            setShow: true,
-            show: true
-
-        })
-
-
-    }
-
-
-    link_handleClose = () => {
-        this.setState({
-            link_setShow: false,
-            link_show: false
+            script: event.target.files[0]
         })
     }
-    link_handleShow = (e) => {
 
-        this.setState({
-            link_setShow: true,
-            link_show: true
-
-        })
-
-
-    }
-    // componentDidUpdate() {
-
-    //     if (this.state.authFlag == true) {
-
-    //         var last = this.props.location.pathname.substring(this.props.location.pathname.lastIndexOf("/") + 1, this.props.location.pathname.length);
-
-    //         //    alert(id._id);
-    //         axios.get(`http://localhost:3001/show_repo/${last}`)
-    //             .then((response) => {
-    //                 //update the state with the response data
-    //                 this.setState({
-    //                     repoData: response.data.repoData,
-    //                     fileData: response.data.fileData,
-    //                     authFlag: false
-    //                 });
-    //             });
-            
-
-    //     }
-
-    // }
-
-
-    onChangeHandler = event => {
-        this.setState({
-            selectedFile: event.target.files,
+    onClick(){
+        const data = new FormData();
+        const {script_name, project_id, tester_id} = this.state;
+        data.set('script_name', script_name);
+        data.set('project_id', project_id);
+        data.set('tester_id', tester_id);
+        data.append('file', this.state.script, this.state.script.filename);
+        // const {file} = this.state;
+        
+        
+        // console.log(email);
+        // console.log(courseid);
+        Axios.post('http://localhost:3001/uploadScript', data, {script_name, project_id, tester_id})
+        .then(res=>{
+            console.log('File Uploaded Successfully');
+            alert('File Uploaded Successfully');
         })
     }
-    onClickHandler = () => {
 
-        var repoId = this.props.location.pathname.substring(this.props.location.pathname.lastIndexOf("/") + 1, this.props.location.pathname.length);
-
-        const data = new FormData()
-        for (var x = 0; x < this.state.selectedFile.length; x++) {
-            data.append('file', this.state.selectedFile[x])
-        }
-        data.append('repoId', repoId);
-        axios.post("http://localhost:3001/upload", data, { params: { repoId: repoId } }, {
-            // receive two    parameter endpoint url ,form data
-        })
-
-            .then(res => { // then print response status
-                console.log(res.statusText)
-                this.setState({
-                    authFlag: true
-                })
-                this.handleClose();
+    componentDidMount(){
+        // addResponseMessage("Welcome to Project: "+(cookie.load('project_name')));
+        // var tester_id = cookie.load('tester_id');
+        var project_id = this.state.project_id;
+        Axios.get('http://localhost:3001/getScriptsM', {params: {project_id}}).then(result=>{
+            console.log(result.data);
+            this.setState({
+                script_data: result.data
             })
+        })
 
-    }
-    componentDidMount() {
-        // console.log('HEllo');
-        // var last = this.props.location.pathname.substring(this.props.location.pathname.lastIndexOf("/") + 1, this.props.location.pathname.length);
-
-        //    alert(id._id);
-        // axios.get(`http://localhost:3001/show_repo/${last}`)
-        //     .then((response) => {
-        //         //update the state with the response data
-        //         this.setState({
-        //             repoData: this.state.repoData.concat(response.data.repoData),
-        //             fileData: this.state.repoData.concat(response.data.fileData),
-        //             repoId: last
-        //         });
-        //     });
-
-            // const project_id = cookie.load('project_id');
-            const project_id = '123';
-            
-            axios.get('http://localhost:3001/getScriptsM', { params: { project_id } }).then(result => {
-                console.log(result.data);
-                this.setState({
-                    fileData: result.data
-                })
+        Axios.get('http://localhost:3001/getNotifications', {params: {project_id}}).then(result=>{
+            console.log(result.data);
+            this.setState({
+                notifications: result.data
             })
-
+        })
     }
 
-
-    render() {
-        // redirect based on successful login
-        // let redirectVar = null;
-        // if (!localStorage.getItem('user')) {
-        //     redirectVar = <Redirect to="/login" />
-        // }
-
-        // let repo_details = this.state.repoData.map(item => {
-        //     var buttonType = null;
-        //     var button2 = null;
-        //     if (item.assigned) {
-        //         buttonType = <Link to={`/show_profile/${item.assigned_to._id}`}><button className="btn btn-success">Assigned to {item.assigned_to.name}</button> </Link>
-        //         button2 = <Link to="/testResults"><button className="btn btn-primary">Test Results</button></Link>
-        //     } else {
-        //         buttonType = <button className="btn btn-danger" disabled>Not Assigned</button>
-        //     }
-        //     return (
-
-
-
-        //         <Card>
-        //             <Card.Header>Repository: {item.repoName}</Card.Header>
-        //             <Card.Body>
-        //                 <Card.Title>Description: {item.repoDescription}</Card.Title>
-        //                 <Card.Text>
-
-        //                     {buttonType}<br /><br />
-        //                     {button2}
-
-
-
-
-        //                 </Card.Text>
-
-
-        //             </Card.Body>
-        //         </Card>
-
-
-
-        //     )
-        // })
-
-        let file_details = this.state.fileData.map(item => {
-
-            return (
-                <tr>
-
-
-                    <td>{item.script_name}</td>
-                    <a href={item.file_location} download> <td><button className="btn btn-primary">Download</button></td></a>
-
+    render(){
+        let notification = this.state.notifications.map(entry=>{
+            var date = new Date(entry.date);
+            date =  date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear()
+            var owner = 'Manager';
+            var id = cookie.load('manager_id');
+            if(entry.tester_id){
+                var owner = entry.tester_name;
+                var id = entry.tester_id;
+            }
+            return(
+                <tr key={entry._id}>
+                    <td style={{textAlign: 'center'}}>{entry.notification}</td>
+                    <td style={{textAlign: 'center'}}>{owner}</td>
+                    <td style={{textAlign: 'center'}}>{id}</td>
+                    <td style={{textAlign: 'center'}}>{date}</td>
                 </tr>
             )
         })
 
-        // let link_details = this.state.linkData.map(item => {
+        let data = this.state.script_data.map(entry=>{
+            var date = new Date(entry.date);
+            date =  date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear()
+            console.log(entry._id)
+            return(
+                <tr key={entry._id}>
+                    <td style={{textAlign: 'center'}}>{entry.script_name}</td>
+                    <td style={{textAlign: 'center'}}>{date}</td>
+                    <td style={{textAlign: 'center'}}>{entry.tester_id}</td>
+                    <td style={{textAlign: 'center'}}>{entry.tester_name}</td>
+                    <td style={{textAlign: 'center'}}><a href={entry.file_location} download>Download</a></td>
+                    {/* <td style={{textAlign: 'center'}}><a href="#" onClick={()=>{
+                        const {_id, tester_id, project_id, file_name} = entry;
+                        this.setState({
+                            // spinner: <i class="fa fa-circle-o-notch fa-spin" style={{fontSize: '15px'}}></i>
+                            spinner: <i class="fa fa-spinner fa-spin" style={{fontSize: '15px'}}></i>
+                        });
+                        Axios.post('http://localhost:3001/runScript', {_id, tester_id, project_id, file_name}).then(result=>{
+                            console.log(result);
+                            Axios.post('http://localhost:3001/makePayment', {tester_id, project_id}).then(result=>{
+                                console.log(result);
+                            })
 
-        //     return (
-        //         <tr>
+                            if(result.data==true){
+                                // alert('Tests Executed Successfully. Please view the log report');
+                                this.setState({
+                                    spinner: <span style={{color: '#90ee90'}} class="glyphicon glyphicon-ok"></span>
+                                })
+                            }
+                            else{
+                                this.setState({
+                                    spinner: <span class="glyphicon glyphicon-remove" style={{color: 'red'}}></span>
+                                })
+                                // alert('There was error executing one or more test cases');
+                            }
+                            
+                        });
+                        // <div class="spinner-border"></div>
+                    }}><span class="glyphicon glyphicon-play"></span></a>&nbsp;&nbsp;&nbsp;{this.state.spinner}</td> */}
+                    {/* <td style={{textAlign: 'center'}}><a href="#" onClick={()=>{
+                        var _id = entry._id;
+                        var tester_id = entry.tester_id;
+                        var project_id = entry.project_id;
+                        Axios.post('http://localhost:3001/deleteScript', {_id, tester_id, project_id}).then(result=>{
+                            console.log('Deleted', result);
+                            alert('Script File Deleted');
+                        })
+                    }}><span class="glyphicon glyphicon-trash"></span></a></td> */}
+                </tr>
+            );
+        })
 
-
-        //             <td>{item}</td>
-        //             <a href={"http://localhost:3000/uploads/" + this.state.repoId + "/" + item} > <td><button className="btn btn-primary">Open link</button></td></a>
-
-        //         </tr>
-        //     )
-        // })
-
-
-        return (
+        return(
             <div class="container">
-                {/* {redirectVar} */}
-                
-                <div className="container-fluid">
                 <Dashboard/>
-                    <div className="row">
-                        <div className="col-md-3">
-                            {/* <Navigation email={this.state.email} /> */}
-                        </div>
-                        <div className="col-md-9">
-
-                            <div className=" top_100">
-
-                                {/* {repo_details} */}
-                                <br />
-                                <br />
-                                <br />
-                                <button className="btn btn-primary" onClick={this.handleShow}>  <span className="fa fa-plus-square-o"></span> New File</button>
-                                <span > OR </span>
-                                <button className="btn btn-primary" onClick={this.link_handleShow}>  <span className="fa fa-plus-square-o"></span> New Link</button>
-                                <br />
-                                <br />
-
-
-
-
-                                <h3>Files in the repository</h3>
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>File Name</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {/*Display the Tbale row based on data recieved*/}
-                                        {file_details}
-                                    </tbody>
-                                </table>
-
-
-
-                                <br />
-                                <br />
-                                <br />
-
-                                {/* <h3>Links in the repository</h3>
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Link</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody> */}
-                                        {/*Display the Tbale row based on data recieved*/}
-                                        {/* {link_details}
-                                    </tbody>
-                                </table> */}
-
-
-
-
-
-
-                                <Modal show={this.state.show} onHide={this.handleClose} >
-                                    <Modal.Header closeButton>
-                                        <Modal.Title>Add Files</Modal.Title>
-                                    </Modal.Header>
-                                    <Modal.Body>
-
-                                        <label for="repoName">Select Files</label>
-                                        <div className="form-group">
-                                            <input type="file" class="form-control" multiple onChange={this.onChangeHandler} />
-                                        </div>
-
-
-
-
-                                    </Modal.Body>
-                                    <Modal.Footer>
-                                        <Button variant="secondary" onClick={this.handleClose}>
-                                            Close
-          </Button>
-                                        <Button variant="primary" onClick={this.onClickHandler}>
-                                            Upload
-          </Button>
-                                    </Modal.Footer>
-                                </Modal>
-
-
-
-
-                                <Modal show={this.state.link_show} onHide={this.link_handleClose} >
-                                    <Modal.Header closeButton>
-                                        <Modal.Title>Add Link</Modal.Title>
-                                    </Modal.Header>
-                                    <Modal.Body>
-
-                                        <label for="repoName">Add Link</label>
-                                        <div className="form-group">
-                                            <input type="text" class="form-control" onChange={this.link_onChangeHandler} />
-                                        </div>
-
-
-
-
-                                    </Modal.Body>
-                                    <Modal.Footer>
-                                        <Button variant="secondary" onClick={this.link_handleClose}>
-                                            Close
-          </Button>
-                                        <Button variant="primary" onClick={this.link_onClickHandler}>
-                                            Upload
-          </Button>
-                                    </Modal.Footer>
-                                </Modal>
-
-
+                <span style={{marginLeft: '-900px'}}>
+                    <a href="/myprojects">My Projects</a> > <a href="/myprojectpage">{cookie.load('project_name')}</a>
+                </span>
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Upload Script</h4>
                             </div>
+                        <div class="modal-body">
+                            <input type="text" name="script_name" id="script_name" placeholder="Script Name" onChange={this.onChange}/><br/><br/>
+                            {/* <input type="text" name="tester_id" id="tester_id" placeholder="Tester ID" onChange={this.onChange}/><br/><br/>
+                            <input type="text" name="project_id" id="project_id" placeholder="Project ID" onChange={this.onChange}/> */}
+                            <input type="file" name="script" id="script" onChange={this.onChangeFile.bind(this)}/>
+                            <button type="button" class="btn btn-success" onClick={this.onClick}>Submit</button>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </div>
-
                 </div>
+
+                
             </div>
-        )
+
+
+
+            <div class="modal fade" id="myModalN" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Notification</h4>
+                            </div>
+                        <div class="modal-body">
+                            <textarea type="text" rows="6" cols="80" name="notification" id="notification" placeholder="Message" onChange={this.onChange}/><br/><br/>
+                            {/* <input type="text" name="tester_id" id="tester_id" placeholder="Tester ID" onChange={this.onChange}/><br/><br/>
+                            <input type="text" name="project_id" id="project_id" placeholder="Project ID" onChange={this.onChange}/> */}
+                            {/* <input type="file" name="script" id="script" onChange={this.onChangeFile.bind(this)}/> */}
+                            <button type="button" class="btn btn-success" onClick={this.onSubmit.bind(this)}>Submit</button>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+
+                
+            </div>
+                {/* <div class="jumbotron" style={{marginTop: '50px', width: '700px', height: '50px', marginLeft: '15%'}}>
+                    <div> */}
+                        {/* <h2 style={{transform: 'translate(0%, -100%)'}}>{cookie.load('project_name')}</h2> */}
+                        {/* <button style={{transform: 'translate(490%, -180%)'}} type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Add Script</button> */}
+                    {/* </div> */}
+                {/* </div> */}
+                <br /><br /><br />
+                <div>
+                    <table >
+                        <tbody>
+                            <tr style={{}}>
+                                <td style={{ textAlign: 'left', padding: "10px" }}>
+                                    <b>Project Name: </b>
+                                </td>
+                                <td style={{ textAlign: 'left', padding: "10px" }}>
+                                    {cookie.load('project_name')}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style={{ textAlign: 'left', padding: "10px" }}>
+                                    <b>About this project: </b>
+                                </td>
+                                <td style={{ textAlign: 'left', padding: "10px" }}>
+                                    {cookie.load('proj_desc')}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                </div>
+                <div style={{display: 'flex'}}>
+                    <a href="#" data-toggle="modal" data-target="#myModalN"><button class="btn btn-info">Create Notification</button></a>
+                </div>
+                <h3 style={{float:'left'}}>Files</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th style={{textAlign: 'center'}}>Script</th>
+                            <th style={{textAlign: 'center'}}>Date</th>
+                            <th style={{textAlign: 'center'}}>Tester ID</th>
+                            <th style={{textAlign: 'center'}}>Tester Name</th>
+                            <th style={{textAlign: 'center'}}>Download</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {/* <tr>
+                            <td style={{textAlign: 'center'}}>Test Text Field</td>
+                            <td style={{textAlign: 'center'}}>123456</td>
+                            <td style={{textAlign: 'center'}}>5678</td>
+                            <td style={{textAlign: 'center'}}><a href="#">Download</a></td>
+                            <td style={{textAlign: 'center'}}><a href="#"><span class="glyphicon glyphicon-play"></span></a></td>
+                            <td style={{textAlign: 'center'}}><a href="#"><span class="glyphicon glyphicon-trash"></span></a></td>
+                        </tr>
+                        <tr>
+                            <td>Test Button</td>
+                            <td>123457</td>
+                            <td>5679</td>
+                            <td><a href="#">Download</a></td>
+                            <td style={{textAlign: 'center'}}><a href="#"><span class="glyphicon glyphicon-play"></span></a></td>
+                            <td style={{textAlign: 'center'}}><a href="#"><span class="glyphicon glyphicon-trash"></span></a></td>
+                        </tr>
+                        <tr>
+                            <td>Test Toast</td>
+                            <td>123458</td>
+                            <td>5676</td>
+                            <td><a href="#">Download</a></td>
+                            <td style={{textAlign: 'center'}}><a href="#"><span class="glyphicon glyphicon-play"></span></a></td>
+                            <td style={{textAlign: 'center'}}><a href="#"><span class="glyphicon glyphicon-trash"></span></a></td>
+                        </tr> */}
+                        {data}
+                    </tbody>
+                </table>
+
+                <h3 style={{float:'left'}}>Notifications</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th style={{textAlign: 'center'}}>Message</th>
+                            <th style={{textAlign: 'center'}}>Owner</th>
+                            <th style={{textAlign: 'center'}}>ID</th>
+                            <th style={{textAlign: 'center'}}>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {notification}
+                    </tbody>
+                </table>
+            </div>
+        );
     }
 }
 
-
-export default ProjectPage;
+export default Scripts;

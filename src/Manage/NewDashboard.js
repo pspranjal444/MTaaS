@@ -38,6 +38,14 @@ class NewDashboard extends Component {
                 tester_count: result.data.length
             })
         })
+
+        // const {manager_id} = this.state;
+        Axios.get('http://localhost:3001/getApps', {params: {manager_id}}).then(result=>{
+            console.log(result);
+            this.setState({
+                applications_count: result.data.length
+            })
+        })
     }
 
     render(){
@@ -82,7 +90,7 @@ class NewDashboard extends Component {
                 </div>
 
                 <div className="col-md-4">
-                            {/* <Link to="/Testers">  */}
+                            <Link to="/viewApps"> 
                                 <div className="card_outer">
                                     <div className="row">
                                         <div className="col-md-4">
@@ -92,11 +100,11 @@ class NewDashboard extends Component {
                                         </div>
 
                                         <div className="col-md-8">
-                                            <h3 className="center top_10">All Applications</h3>
+                                            <h3 className="center top_10">All Applications ({this.state.applications_count})</h3>
                                          </div>
                                     </div>
                                 </div>
-                                {/* </Link> */}
+                                </Link>
                 </div>
             </div>
         )

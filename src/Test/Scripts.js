@@ -7,9 +7,10 @@ class Scripts extends Component{
     constructor(props){
         super(props);
         this.state = {
+            name: cookie.load('name'),
             script_name: '',
-            project_id: '',
-            tester_id: '',
+            project_id: cookie.load('project_id'),
+            tester_id: cookie.load('tester_id'),
             script: null,
             script_data: [],
             spinner: ''
@@ -33,7 +34,8 @@ class Scripts extends Component{
 
     onClick(){
         const data = new FormData();
-        const {script_name, project_id, tester_id} = this.state;
+        const {script_name, project_id, tester_id, name} = this.state;
+        data.set('name', cookie.load('name'));
         data.set('script_name', script_name);
         data.set('project_id', project_id);
         data.set('tester_id', tester_id);
@@ -43,7 +45,8 @@ class Scripts extends Component{
         
         // console.log(email);
         // console.log(courseid);
-        Axios.post('http://localhost:3001/uploadScript', data, {script_name, project_id, tester_id})
+
+        Axios.post('http://localhost:3001/uploadScript', data, {script_name, project_id, tester_id, name})
         .then(res=>{
             console.log('File Uploaded Successfully');
             alert('File Uploaded Successfully');
@@ -63,7 +66,9 @@ class Scripts extends Component{
     render(){
         let data = this.state.script_data.map(entry=>{
             var date = new Date(entry.date);
+            var spin;
             date =  date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear()
+            console.log("IDDD", entry._id)
             return(
                 <tr key={entry._id}>
                     
@@ -71,12 +76,13 @@ class Scripts extends Component{
                     <td style={{textAlign: 'center'}}>{entry.tester_id}</td>
                     <td style={{textAlign: 'center'}}>{date}</td>
                     <td style={{textAlign: 'center'}}><a href={entry.file_location} download>Download</a></td>
-                    <td style={{textAlign: 'center'}}><a href="#" onClick={()=>{
+                    <td  key={entry._id} style={{textAlign: 'center'}}><a href="#" onClick={()=>{
                         const {_id, tester_id, project_id, file_name} = entry;
                         this.setState({
                             // spinner: <i class="fa fa-circle-o-notch fa-spin" style={{fontSize: '15px'}}></i>
                             spinner: <i class="fa fa-spinner fa-spin" style={{fontSize: '15px'}}></i>
                         });
+                        spin = <i class="fa fa-spinner fa-spin" style={{fontSize: '15px'}}></i>;
                         Axios.post('http://localhost:3001/runScript', {_id, tester_id, project_id, file_name}).then(result=>{
                             console.log(result);
                             Axios.post('http://localhost:3001/makePayment', {tester_id, project_id}).then(result=>{
@@ -98,7 +104,7 @@ class Scripts extends Component{
                             
                         });
                         // <div class="spinner-border"></div>
-                    }}><span class="glyphicon glyphicon-play"></span></a>&nbsp;&nbsp;&nbsp;{this.state.spinner}</td>
+                    }}><span class="glyphicon glyphicon-play"></span></a>&nbsp;&nbsp;&nbsp;{spin}</td>
                     <td style={{textAlign: 'center'}}><a href="#" onClick={()=>{
                         var _id = entry._id;
                         var tester_id = entry.tester_id;

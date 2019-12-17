@@ -11,9 +11,9 @@ class Sidebar extends Component{
         return(
             <div class="sidenav">
                 <h3 style={{fontSize: "30px", WebkitTextFillColor: 'white'}}>MTaaS</h3>
-                <a style={{fontSize: "17px"}} href="/updateProfile">Profile</a>
-                <a style={{fontSize: "17px"}} href="/myApps">My Applications</a>
-                <a style={{fontSize: "17px"}} href="/testMessages">Chat</a>
+                <a style={{fontSize: "17px"}} href="/updateProfileM">Profile</a>
+                {/* <a style={{fontSize: "17px"}} href="/myApps">My Applications</a> */}
+                <a style={{fontSize: "17px"}} href="/chatkit">Chat</a>
                 <a style={{fontSize: "17px"}} href="/pro_com_pro">Community</a>
                 {/* <a href="/viewApps">View Applications</a> */}
             </div>

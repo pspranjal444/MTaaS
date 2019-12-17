@@ -4,7 +4,7 @@ import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
 // import Nav from '../frontend/nav';
-import Dashboard from '../Manage/Dashboard';
+import Dashboard from '../Test/Dashboard';
 
 class Profile extends Component {
     constructor(props){

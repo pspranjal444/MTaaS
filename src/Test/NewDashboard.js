@@ -14,7 +14,7 @@ class NewDashboard extends Component {
 
         this.state = {
             project_count: '',
-            // tester_count: ''
+            bugs_count: ''
         }
     }
 
@@ -26,6 +26,15 @@ class NewDashboard extends Component {
             console.log(result.data.length);
             this.setState({
                 project_count: result.data.length
+            })
+        })
+
+        Axios.get('http://localhost:3001/getBugsList').then(result=>{
+            console.log(result);
+            console.log('Hello')
+            console.log(result.data.length);
+            this.setState({
+                bugs_count: result.data.length
             })
         })
 
@@ -63,7 +72,7 @@ class NewDashboard extends Component {
                                 </Link>
                 </div>
                 <div className="col-md-4">
-                            <Link to="/myTesters"> 
+                            <Link to="#"> 
                                 <div className="card_outer">
                                     <div className="row">
                                         <div className="col-md-4">
@@ -73,16 +82,16 @@ class NewDashboard extends Component {
                                         </div>
 
                                         <div className="col-md-8">
-                                            <h3 className="center top_10"> Bugs ({this.state.tester_count})</h3>
+                                            <h3 className="center top_10"> Bugs ({this.state.bugs_count})</h3>
                                          </div>
                                     </div>
                                 </div>
                                 </Link>
                 </div>
 
-                {/* <div className="col-md-4"> */}
-                            {/* <Link to="/Testers">  */}
-                                {/* <div className="card_outer">
+                {/* <div className="col-md-4">
+                            <Link to="#"> 
+                                <div className="card_outer">
                                     <div className="row">
                                         <div className="col-md-4">
                                             <div className="color_background">
@@ -91,12 +100,12 @@ class NewDashboard extends Component {
                                         </div>
 
                                         <div className="col-md-8">
-                                            <h3 className="center top_10">All Applications</h3>
+                                            <h3 className="center top_10">Notifications</h3>
                                          </div>
                                     </div>
-                                </div> */}
-                                {/* </Link> */}
-                {/* </div> */}
+                                </div>
+                                </Link>
+                </div> */}
             </div>
         )
     }

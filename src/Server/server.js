@@ -14,11 +14,22 @@ const userData = require('../../models/userData');
 const ProjectSchema = require('../../models/ProjectSchema');
 const ApplicationSchema = require('../../models/ApplicationSchema');
 const Messages = require('../../models/Messages');
+const Chatkit = require('@pusher/chatkit-server');
+const NotificationSchema = require('../../models/NotificationSchema');
+require('dotenv').config({ path: '.env' });
+
+const chatkit = new Chatkit.default({
+    instanceLocator: process.env.CHATKIT_INSTANCE_LOCATOR,
+    key: process.env.CHATKIT_SECRET_KEY,
+});
+
 // const port = 8002;
 // var server = require("http").Server(app);
 // const io = require("socket.io")(server);
 // const users = require("./configs/users");
 
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
 mongoose.connect('mongodb+srv://mtaas:mtaas@cluster0-jzndm.mongodb.net/test?retryWrites=true&w=majority', { useNewUrlParser: true });
 
@@ -40,6 +51,7 @@ app.post('/signup',function(req,res){
     var name= req.body.Name;
     var username=req.body.Email;
     var password=req.body.Password;
+    var {lat, lon} = req.body;
     // password = md5(password);
     var role=req.body.Role;
     
@@ -59,6 +71,8 @@ app.post('/signup',function(req,res){
           username: username,
           password: password,
           role: role,
+          lat: lat,
+          lon: lon,
           skils:'',
           projectid:'',
           projects:'' ,
@@ -109,6 +123,16 @@ app.get('/getTesterProfile', function(req,res){
     // console.log('Profile in  view',email);
     var query={user_id: tester_id};
     userData.find(query).exec().then(result=>{
+      console.log("Get tester Profile",result);
+      res.json(result);
+    })
+});
+
+app.get('/getPosition', function(req,res){
+    // var tester_id=req.query.tester_id;
+    // console.log('Profile in  view',email);
+    // var query={user_id: tester_id};
+    userData.find({}).exec().then(result=>{
       console.log("Get tester Profile",result);
       res.json(result);
     })
@@ -176,13 +200,42 @@ app.post('/updateprofile',function(req,res){
     var projects=req.body.projects;
     var resume=req.body.resume;
 
-    var query={$set: {username:email,name:name,role:role,skils:skills,projects:projects,resume:resume}};
+    var query={$set: {username:email,name:name,role:role,skills:skills,projects:projects,resume:resume}};
     userData.update({username:email},query).exec().then(result=>{
         console.log("Profile Updated Sucessfully",result);
         res.send(true);
     }).catch(err=>console.log(err));
     
 })
+
+
+app.post('/users', (req, res) => {
+    const { userId } = req.body;
+  
+    chatkit
+      .createUser({
+        id: userId,
+        name: userId,
+      })
+      .then(() => {
+        res.sendStatus(201);
+      })
+      .catch(err => {
+        if (err.error === 'services/chatkit/user_already_exists') {
+          console.log(`User already exists: ${userId}`);
+          res.sendStatus(200);
+        } else {
+          res.status(err.status).json(err);
+        }
+      });
+  });
+  
+  app.post('/authenticate', (req, res) => {
+    const authData = chatkit.authenticate({
+      userId: req.query.user_id,
+    });
+    res.status(authData.status).send(authData.body);
+  });
 
 app.post('/createProject', (req, res)=>{
     const {manager_id, manager_name, app_link, proj_name, proj_desc} = req.body;
@@ -237,6 +290,33 @@ app.get('/getManagerProjects', (req, res)=>{
     })
 })
 
+app.post('/notify', (req, res)=>{
+    const {tester_id, name, project_id, notification} = req.body;
+
+    const entry = new NotificationSchema({
+        _id: new mongoose.Types.ObjectId(),
+        tester_id: tester_id,
+        tester_name: name,
+        project_id: project_id,
+        notification: notification,
+        date: Date.now()
+    })
+
+    entry.save().then(result=>{
+        console.log(result);
+        res.send(true);
+    })
+})
+
+
+app.get('/getNotifications', (req, res)=>{
+    const {project_id} = req.query;
+    NotificationSchema.find({project_id: project_id}).exec().then(result=>{
+        console.log(result);
+        res.json(result);
+    })
+})
+
 app.get('/getAllProjects', (req, res)=>{
     ProjectSchema.find({}).exec().then(result=>{
         console.log(result)
@@ -284,8 +364,8 @@ app.post('/uploadScript', (req, res) => {
 
     fileLoc = 'http://localhost:3001/'+randomString+`${filename}`;
 
-    const {script_name, tester_id, project_id} = req.body;
-
+    const {script_name, tester_id, project_id, name} = req.body;
+    console.log('TESTER NAME', name)
     const data = new ScriptsSchema({
         _id: new mongoose.Types.ObjectId(),
         script_name: script_name,
@@ -293,7 +373,8 @@ app.post('/uploadScript', (req, res) => {
         project_id: project_id,
         file_name: filename,
         file_location: fileLoc,
-        date: Date.now()
+        date: Date.now(),
+        tester_name: name
     })
 
     data.save().then(result=>{
@@ -368,6 +449,19 @@ app.get('/getScripts', (req, res) => {
     const tester_id = req.query.tester_id;
     const project_id = req.query.project_id;
     ScriptsSchema.find({tester_id: tester_id, project_id: project_id}).exec().then(result=>{
+        console.log(result);
+        res.json(result);
+    }).catch(err=>{
+        console.log(err);
+    })
+})
+
+app.get('/getScriptsM', (req, res) => {
+    // const {tester_id} = req.query;
+
+    // const tester_id = req.query.tester_id;
+    const project_id = req.query.project_id;
+    ScriptsSchema.find({project_id: project_id}).exec().then(result=>{
         console.log(result);
         res.json(result);
     }).catch(err=>{
@@ -501,10 +595,9 @@ app.get('/downloadScript', (req, res) => {
 
 app.post('/createBug', (req, res) => {
     const summary =  req.body.summary;
-    const test_id = req.body.test_id;
-    const project_id = req.body.project_id;
-    const tester_id = req.body.tester_id;
-    const reproduce_steps = req.body.reproduce_steps;
+    const project_id = req.body.projectid;
+    const tester_id = req.body.testerid;
+    const reproduce_steps = req.body.steps;
     const actual_results = req.body.actual_results;
     const expected_results = req.body.expected_results;
     const bug_type = req.body.bug_type;
@@ -513,14 +606,14 @@ app.post('/createBug', (req, res) => {
     const bug = new BugSchema({
         _id: new mongoose.Types.ObjectId(),
         summary: summary,
-        test_id: test_id,
         project_id: project_id,
         tester_id: tester_id,
         reproduce_steps: reproduce_steps,
         actual_results: actual_results,
         expected_results: expected_results,
         bug_type: bug_type,
-        bug_severity: bug_severity
+        bug_severity: bug_severity,
+        date: Date.now()
     })   
     
     bug.save().then(result => {
@@ -537,10 +630,20 @@ app.get('/getBugDetails', (req, res) => {
 })
 
 app.get('/getBugsList', (req, res) => {
-    BugSchema.find().exec().then(result=>{
+    const {project_id} = req.query;
+    BugSchema.find({project_id: project_id}).exec().then(result=>{
         res.json(result);
     })
 });
+
+app.post('/updateProject', (req, res)=>{
+    const {project_id, project_name, proj_desc, app_link} = req.body;
+    var query={$set: {project_name: project_name, proj_desc: proj_desc, app_link: app_link}};
+    ProjectSchema.update({project_id: project_id}, query).exec().then(result=>{
+        console.log(result);
+        res.send(true);
+    })
+})
 
 app.get('/getTesterProjects', (req, res)=>{
     
@@ -613,6 +716,25 @@ app.get('/getTesters', (req, res)=>{
 // );
 
 
+// io.sockets.on('connection', function(socket) {
+//     socket.on('username', function(username) {
+//         socket.username = username;
+//         io.emit('is_online', '🔵 <i>' + socket.username + ' join the chat..</i>');
+//     });
 
+//     socket.on('disconnect', function(username) {
+//         io.emit('is_online', '🔴 <i>' + socket.username + ' left the chat..</i>');
+//     })
+
+//     socket.on('chat_message', function(message) {
+//         io.emit('chat_message', '<strong>' + socket.username + '</strong>: ' + message);
+//     });
+
+// });
+
+
+// const server = http.listen(8080, function() {
+//     console.log('listening on *:8080');
+// });
 app.listen(3001);
 console.log('Server is listening on port 3001');

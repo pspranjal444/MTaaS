@@ -20,9 +20,9 @@ class Dashboard extends Component{
                         </div>
                         <ul class="nav navbar-nav">
                             <li class="active"><Link to="/metricsManager">Home</Link></li>
-                            <li><Link to="/createProject">Create Project</Link></li>
+                            {/* <li><Link to="/createProject">Create Project</Link></li> */}
                             {/* <li><Link to="/myprojects">My Projects</Link></li> */}
-                            <li><Link to="/viewApps">View Applications</Link></li>
+                            {/* <li><Link to="/viewApps">View Applications</Link></li> */}
                             <li><Link to="/testMessages">Messages</Link></li>
                             <li><Link to="/map">My Testers</Link></li>
                             <li><Link to="/billing">Billing</Link></li>

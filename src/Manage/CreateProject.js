@@ -61,8 +61,9 @@ class CreateProject extends Component{
             <div class="container">
                 {redirectVar}
                     <Dashboard/>
+                    <a style={{ float: 'left', marginLeft: '17px' }} href="/myprojects"><button class="btn btn-danger"><span class="glyphicon glyphicon-chevron-left"></span> Back</button></a><br /><br /><br />
                     <div class="jumbotron" style={{width: '700px', height: '750px', marginLeft: '15%'}}>
-                        <div style={{marginLeft: '-375px'}}><h2>Create a Project</h2></div>
+                        <div style={{marginLeft: '-375px'}}><h2><span class="glyphicon glyphicon-plus"></span> Add Project</h2></div>
                         
                         <br/>
                         

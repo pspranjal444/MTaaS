@@ -10,7 +10,8 @@ const BugSchema = mongoose.Schema({
     actual_results: String,
     expected_results: String,
     bug_type: String,
-    bug_severity: String 
+    bug_severity: String,
+    date: Date 
 })
 
 module.exports = mongoose.model('BugSchema', BugSchema);

@@ -17,11 +17,10 @@ class Dashboard extends Component{
                         </div>
                         <ul class="nav navbar-nav">
                             <li class="active"><Link to="/metrics">Home</Link></li>
-                            <li><Link to="/scripts">View Scripts</Link></li>
                             <li><Link to="/logs">View Logs</Link></li>
-                            <li><Link to="/report_bug">Report Bug</Link></li>
+                            {/* <li><Link to="/report_bug">Report Bug</Link></li> */}
                             <li><Link to="/projects">My Projects</Link></li>
-                            <li><Link to="/bugs">View Bugs</Link></li>
+                            {/* <li><Link to="/bugs">View Bugs</Link></li> */}
                             <li><Link to="/createDevice">Create Device</Link></li>
                             <li><Link to="/viewDevices">View Devices</Link></li>
                         </ul>

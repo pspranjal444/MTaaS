@@ -11,17 +11,18 @@ class Bugs extends Component{
             bugs: [],
             bugDetails: [],
             summary: '',
-            test_id: '',
             reproduce_steps: '',
             actual_results: '',
             expected_results: '',
             bug_type: '',
-            bug_severity: ''
+            bug_severity: '',
+            date: ''
         }
     }
 
     componentDidMount(){
-        Axios.get('http://localhost:3001/getBugsList').then(result=>{
+        const project_id = cookie.load('project_id');
+        Axios.get('http://localhost:3001/getBugsList', {params: {project_id}}).then(result=>{
             this.setState({
                 bugs: result.data
             })
@@ -39,19 +40,19 @@ class Bugs extends Component{
                     <td style={{textAlign: 'center'}}>BG{entry._id}</td>
                     <td style={{textAlign: 'center'}}>{entry.summary}</td>
                     <td style={{textAlign: 'center'}}>{entry.project_id}</td>
-                    <td style={{textAlign: 'center'}}>{entry.test_id}</td>
+                    <td style={{textAlign: 'center'}}>{entry.date}</td>
                     <td style={{textAlign: 'center'}}><a href="#" onClick={()=>{
                         var _id = entry._id;
                         
                         Axios.get('http://localhost:3001/getBugDetails', {params:{_id}}).then(result=>{
                             this.setState({
                                 summary: result.data[0].summary,
-                                test_id: result.data[0].test_id,
                                 reproduce_steps: result.data[0].reproduce_steps,
                                 actual_results: result.data[0].actual_results,
                                 expected_results: result.data[0].expected_results,
                                 bug_type: result.data[0].bug_type,
-                                bug_severity: result.data[0].bug_severity
+                                bug_severity: result.data[0].bug_severity,
+                                date: result.data[0].date
                             })
                         })
                         
@@ -66,6 +67,9 @@ class Bugs extends Component{
         return(
             <div class="container">
                 <Dashboard/>
+                <span style={{ marginLeft: '-900px' }}>
+                    <a href="/mypt">My Projects</a> > <a href="/ppt">{cookie.load('project_name')}</a>
+                </span>
                 <div class="modal fade" id="myModal" role="dialog">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -77,15 +81,11 @@ class Bugs extends Component{
                                 <div class="modal-body">
                                     <p><b>Summary:</b>&nbsp;&nbsp;&nbsp;&nbsp;{this.state.summary}</p>
                                     {/* <h6>Parameters to test:</h6> */}
-                                    <p><b>Test ID:</b>&nbsp;&nbsp;&nbsp;&nbsp;{this.state.test_id}</p>
-                                    <p><b>Project ID:</b>&nbsp;&nbsp;&nbsp;&nbsp;{this.state.project_id}</p>
                                     <p><b>Reproduce Steps:</b>&nbsp;&nbsp;&nbsp;&nbsp;{this.state.reproduce_steps}</p>
                                     <p><b>Actual Results:</b>&nbsp;&nbsp;&nbsp;&nbsp;{this.state.actual_results}</p>
                                     <p><b>Expected Results:</b>&nbsp;&nbsp;&nbsp;&nbsp;{this.state.expected_results}</p>
                                     <p><b>Bug Type:</b>&nbsp;&nbsp;&nbsp;&nbsp;{this.state.bug_type}</p>
-                                    {this.state.bug_severity == "low" ? colorSeverity = "green" : colorSeverity = "red"}
-                                    {this.state.bug_severity == "mid" ? colorSeverity = "yellow" : colorSeverity = "red"}
-                                    <p style={{WebkitTextFillColor: colorSeverity}}><b>Bug Severity:</b>&nbsp;&nbsp;&nbsp;&nbsp;{this.state.bug_severity}</p>
+                                    <p><b>Bug Severity:</b>&nbsp;&nbsp;&nbsp;&nbsp;{this.state.bug_severity}</p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -94,16 +94,21 @@ class Bugs extends Component{
                         </div>
                     </div>
                 
-                <div class="jumbotron" style={{marginTop: '50px', width: '700px', height: '50px', marginLeft: '15%'}}>
-                    <h2 style={{transform: 'translate(0%, -100%)'}}>View Bugs</h2>
+                
+                {/* <div class="jumbotron" style={{marginTop: '50px', width: '700px', height: '50px', marginLeft: '15%'}}> */}
+                <div>
+                    <h2 style={{float: 'left'}}>View Bugs</h2><br/><br/><br/><br/>
+                    {/* </div> */}
+                    <a style={{float: 'left'}} href="/report_bug"><button class="btn btn-info">Add New Bug</button></a>
                 </div>
+                <br/><br/>
                 <table class="table table-striped">
                     <thead>
                         <tr>
                             <th style={{textAlign: 'center'}}>Bug ID</th> 
                             <th style={{textAlign: 'center'}}>Bug Name</th>
                             <th style={{textAlign: 'center'}}>Project ID</th>
-                            <th style={{textAlign: 'center'}}>Test ID</th>
+                            <th style={{textAlign: 'center'}}>Date</th>
                             <th style={{textAlign: 'center'}}>View</th>
                         </tr>
                     </thead>
