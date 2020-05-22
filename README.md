@@ -4,6 +4,4 @@
 
 ### Team Members:
 Pranjal Sharma  
-Nehal Sharma  
-Amit Kamboj  
-Rachit Saxena
+Nehal Sharma
